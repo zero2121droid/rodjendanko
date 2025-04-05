@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-hqqy&wm&-tykhxr*9e2ydx6#xuq@dnp9896f5!z-j@&n(r$4sh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'rodjendanko.lenitech.org',
+    'localhost',
+    '127.0.0.1',
+    '192.168.2.20',
+]
 
 
 # Application definition
@@ -41,6 +46,9 @@ INSTALLED_APPS = [
     'core',
     'services',
     'reservations',
+    'rest_framework.authtoken',
+    'drf_yasg',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -51,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'rodjendanko_backend.urls'
@@ -128,3 +137,57 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'core'
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = ''
+
+# REST FRAMEWORK default authentication and permission classes
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    #'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'api.pagination.CustomPageNumberPagination',
+    'PAGE_SIZE': 10
+}
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8082",
+    "https://rodjendanko.lenitech.org",
+]
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",           
+#     "http://127.0.0.1:3000",
+#     "https://itmtools.itm-rz.de",  
+#     "192.168.2.20:5173",
+#     "https://192.168.2.20",
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+#ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY", "b'8PusTxeVS2PXyyS3DNQosWUeP-75Gfvbpdq1cOS0Hjw='")
+ENCRYPTION_KEY = "8PusTxeVS2PXyyS3DNQosWUeP-75Gfvbpdq1cOS0Hjw="
+
+# SIMPLE_JWT = {
+#     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),  # Token expires in 30 minutes
+#     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Refresh token lasts for 7 days
+#     "ROTATE_REFRESH_TOKENS": True,  # Issue a new refresh token each time
+#     "BLACKLIST_AFTER_ROTATION": True,  # Blacklist old refresh tokens
+#     "AUTH_HEADER_TYPES": ("Bearer",),
+# }
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework_simplejwt.authentication.JWTAuthentication',
+#     ),
+# }
+
+

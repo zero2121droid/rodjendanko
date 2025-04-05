@@ -129,3 +129,12 @@ Notifikacije
 Kalendarsko prikazivanje termina
 
 Višekorisničke uloge u admin panelu
+
+
+Struktura:
+    playrooms: modeli i API za igraonice (naziv, opis, lokacija, slike, kapacitet…)
+    reservations: rezervacije termina (datum, vreme, korisnik, igraonica, dodatne usluge)
+    services: dodatne usluge (torte, baloni, animatori…)
+    users: korisnici i autentifikacija (JWT)
+    api: serializeri i viewsetovi, api endpoints
+    core: ???

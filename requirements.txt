@@ -1,13 +1,12 @@
-asgiref==3.8.1
-Django==5.1.1
-django-widget-tweaks==1.5.0
-pillow==10.4.0
-psycopg2-binary==2.9.9
-djangorestframework==3.14.0
-drf_yasg==1.21.8
-setuptools
-gunicorn==20.1.0
-django-cors-headers==3.14.0
-cryptography
-django-filter
-djangorestframework-simplejwt
+asgiref==3.8.1                   # ASGI referentna biblioteka – podrška za async funkcionalnosti u Django aplikacijama
+Django==5.1.1                    # Glavni Django web framework – koristi se za izgradnju celokupne aplikacije
+django-widget-tweaks==1.5.0      # Omogućava lakše prilagođavanje (tweakanje) Django formi direktno u template-ima
+psycopg2-binary==2.9.9           # PostgreSQL drajver – omogućava Django-u da se poveže i komunicira sa PostgreSQL bazom
+djangorestframework==3.14.0      # Django REST Framework – omogućava pravljenje API-jeva u Django aplikaciji
+drf_yasg==1.21.8                 # Generisanje Swagger/OpenAPI dokumentacije za DRF API-je
+setuptools                       # Alat za instalaciju Python paketa – koristi se kod instalacije i deploy-a
+gunicorn==20.1.0                 # WSGI server za produkcijsko okruženje – koristi se za deploy backend aplikacija
+django-cors-headers==3.14.0      # Omogućava postavljanje CORS pravila – bitno kad frontend i backend nisu na istom domenu
+cryptography                     # Rad sa enkripcijom i dekripcijom – koristi se za sigurnost (npr. šifrovanje tokena)
+django-filter                    # Dodaje filter funkcionalnosti u DRF – korisno za filtriranje upita preko API-ja
+djangorestframework-simplejwt    # JWT autentifikacija za Django REST Framework – koristi se za login/token baziranu zaštitu

@@ -1,0 +1,15 @@
+Serializers vs Views
+
+🧩 The Main Difference:
+
+Django Views	                                                Django Serializers
+Handle incoming HTTP requests and return responses	            Convert data to/from JSON (or other formats)
+Define what logic happens when a request is made	            Define how data should be structured
+Usually include routing logic (GET, POST, PUT…)	                Usually include validation and formatting
+Think: "What to do when a user visits an endpoint?"	            Think: "How to represent and validate this data?"
+🎯 Example Analogy
+
+Imagine you have a form to book a birthday party:
+
+View is like the person handling the form: they receive it, check what's needed, and respond.
+Serializer is like the instructions on how to fill the form and how to interpret it: it says which fields are required, what format they must be in, and how to store/read that info.
