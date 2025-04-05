@@ -9,7 +9,7 @@ services:
     ports:
       - "8086:8000"
     depends_on:
-      - db
+      - db_rodjendanko
     environment:
       - DJANGO_SETTINGS_MODULE=rodjendanko_backend.settings
       - PYTHONPATH=/app
@@ -19,7 +19,7 @@ services:
       - DATABASE_PASSWORD=njeXe3f0JiosaHpYvkMtAv2M
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
-  db:
+  db_rodjendanko:
     image: postgres:13
     container_name: rodjendanko_postgres_db
     volumes:
