@@ -17,8 +17,8 @@ services:
       - DATABASE_NAME=rodjendanko_db
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=njeXe3f0JiosaHpYvkMtAv2M
-      - DATABASE_HOST=db
-      - DATABASE_PORT=5432
+      - DATABASE_HOST=db_rodjendanko
+      - DATABASE_PORT=5433
   db_rodjendanko:
     image: postgres:13
     container_name: rodjendanko_postgres_db
