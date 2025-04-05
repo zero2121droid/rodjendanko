@@ -11,3 +11,4 @@ cryptography                     # Rad sa enkripcijom i dekripcijom – koristi 
 django-filter                    # Dodaje filter funkcionalnosti u DRF – korisno za filtriranje upita preko API-ja
 djangorestframework-simplejwt    # JWT autentifikacija za Django REST Framework – koristi se za login/token baziranu zaštitu
 pillow==10.4.0                   # Biblioteka za rad sa slikama – koristi se za obradu slika u aplikaciji
+whitenoise==6.2.0                # Omogućava serviranje statičkih fajlova u produkciji – koristi se za statičke resurse
