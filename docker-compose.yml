@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: backend_rodjendanko
     ports:
-      - "8082:8000"
+      - "8086:8000"
     depends_on:
       - db
     environment:
@@ -29,7 +29,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=njeXe3f0JiosaHpYvkMtAv2M
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
 volumes:
   postgres_data:
