@@ -92,6 +92,7 @@ DATABASES = {
         'USER': 'postgres',      # zameni svojim korisničkim imenom
         'PASSWORD': 'njeXe3f0JiosaHpYvkMtAv2M',   # zameni svojom lozinkom
         'HOST': 'db_rodjendanko',
+        #'HOST': 'localhost',
         'PORT': '5432',
     }
 }
