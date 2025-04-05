@@ -80,8 +80,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'rodjendanko_db',
-        'USER': 'rodjendanko',      # zameni svojim korisničkim imenom
-        'PASSWORD': 'berserk1!',   # zameni svojom lozinkom
+        'USER': 'postgres',      # zameni svojim korisničkim imenom
+        'PASSWORD': 'njeXe3f0JiosaHpYvkMtAv2M',   # zameni svojom lozinkom
         'HOST': 'localhost',
         'PORT': '5432',
     }
