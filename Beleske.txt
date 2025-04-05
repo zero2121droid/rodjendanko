@@ -1,0 +1,131 @@
+
+--------Struktura baze----------
+# Django modeli
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+
+class Provider(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+class Service(models.Model):
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    duration_minutes = models.PositiveIntegerField()
+
+class Reservation(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    status = models.CharField(max_length=20, choices=[("pending", "Pending"), ("confirmed", "Confirmed")])
+
+class Availability(models.Model):
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+    weekday = models.IntegerField()  # 0=Monday, 6=Sunday
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+
+
+✅ 🎯 MVP ZA APLIKACIJU ZA ZAKAZIVANJE (rodjendanko_backend)
+🧱 1. Korisnici
+Cilj: Omogućiti login/autentifikaciju i osnovne uloge.
+
+ Registracija i login korisnika (JWT, API-only)
+
+ Rola: Korisnik (ko zakazuje) i Provider (ko nudi uslugu)
+
+ Korisnik može da vidi dostupne usluge
+
+ Provider može da vidi sopstvene rezervacije
+
+🏢 2. Provider (Pružalac usluge)
+Cilj: Predstavlja npr. igraonicu, frizera, doktora...
+
+Model Provider:
+
+Ime
+
+Opis
+
+Kategorija (npr. "Deca", "Lepota", "Zdravlje")
+
+Lokacija (grad, adresa)
+
+💼 3. Service (Usluga)
+Cilj: Opis usluge koju Provider nudi.
+
+Model Service:
+
+Povezan sa Provider
+
+Naziv
+
+Opis
+
+Cena
+
+Trajanje (u minutima)
+
+📅 4. Availability (Dostupni termini)
+Cilj: Provider unosi termine kada je dostupan.
+
+Model Availability:
+
+Provider
+
+Dan u nedelji (0–6)
+
+Vreme od–do (08:00–12:00)
+
+📆 5. Reservation (Rezervacija termina)
+Cilj: Korisnik rezerviše konkretnu uslugu u ponuđenom terminu.
+
+Model Reservation:
+
+User
+
+Service
+
+Datum i vreme početka (start_time)
+
+Status: pending / confirmed / canceled
+
+🔐 6. Autentifikacija i Autorizacija
+Cilj: JWT API login/register
+
+Koristi djoser ili custom JWT auth
+
+Provider može pristupiti svojim rezervacijama
+
+Korisnik vidi svoje rezervacije
+
+📦 7. REST API (Django REST Framework)
+Cilj: API za frontend
+
+ Endpoint za listu usluga i pretragu po kategoriji
+
+ Endpoint za zakazivanje termina
+
+ Endpoint za registraciju i login
+
+ Endpoint za pregled i brisanje rezervacija
+
+🖼️ Vizuelni primer odnosa modela:
+markdown
+Copy
+Edit
+User ────────┐
+             │
+         makes Reservation ───→ Service ───→ Provider ───→ Category
+📝 MVP nije (još):
+Stripe plaćanje
+
+Notifikacije
+
+Kalendarsko prikazivanje termina
+
+Višekorisničke uloge u admin panelu
