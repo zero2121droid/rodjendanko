@@ -144,3 +144,21 @@ Marketing mogućnosti za koriscenje novcica
 Bonus za registraciju: "Dobijate 50 novcica!"
 Referral program: "Dovedi prijatelja i osvoji 100 novcica!"
 Popusti na pakete novčića: "Kupi 500, dobij 50 gratis!"
+
+Sponsored content (sponzorisani kvizovi ili igre)
+Kako radi?
+Dogovoriš se sa proizvođačem balona, torti, animatora itd. da njihov brend bude u kvizu ili igri.
+
+Npr: “Koji je najpopularniji ukus torte iz SweetCake poslastičarnice?”
+
+Oni plate da se reklamiraju, korisnici igraju — ti zaradiš, korisnik dobije novčiće.
+
++ Plus: Idealno ako sarađuješ sa lokalnim dobavljačima (baloni, pinjate, maskote itd.).
+
+Gledanje reklama pre igre / kviza
+Kako radi?
+Pre nego što korisnik pokrene kviz ili igricu, mora da pogleda kratku reklamu (15–30 sekundi).
+
+Dobijaš novac od prikaza (via AdMob, Unity Ads, itd.).
+
++ Plus: Odrasli korisnici to već znaju s mobilnih igara, nije im strano. – Minus: Moraš integrisati video ads i pratiti korisničko iskustvo.
