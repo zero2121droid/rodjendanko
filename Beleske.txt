@@ -138,3 +138,9 @@ Struktura:
     users: korisnici i autentifikacija (JWT)
     api: serializeri i viewsetovi, api endpoints
     core: ???
+
+
+Marketing mogućnosti za koriscenje novcica
+Bonus za registraciju: "Dobijate 50 novcica!"
+Referral program: "Dovedi prijatelja i osvoji 100 novcica!"
+Popusti na pakete novčića: "Kupi 500, dobij 50 gratis!"
