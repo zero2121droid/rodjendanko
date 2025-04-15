@@ -137,4 +137,99 @@ Struktura:
     services: dodatne usluge (torte, baloni, animatori…)
     users: korisnici i autentifikacija (JWT)
     api: serializeri i viewsetovi, api endpoints
+<<<<<<< HEAD
     wallet: 
+=======
+    core: ???
+
+
+Marketing mogućnosti za koriscenje novcica
+Bonus za registraciju: "Dobijate 50 novcica!"
+Referral program: "Dovedi prijatelja i osvoji 100 novcica!"
+Popusti na pakete novčića: "Kupi 500, dobij 50 gratis!"
+
+Sponsored content (sponzorisani kvizovi ili igre)
+Kako radi?
+Dogovoriš se sa proizvođačem balona, torti, animatora itd. da njihov brend bude u kvizu ili igri.
+
+Npr: “Koji je najpopularniji ukus torte iz SweetCake poslastičarnice?”
+
+Oni plate da se reklamiraju, korisnici igraju — ti zaradiš, korisnik dobije novčiće.
+
++ Plus: Idealno ako sarađuješ sa lokalnim dobavljačima (baloni, pinjate, maskote itd.).
+
+Gledanje reklama pre igre / kviza
+Kako radi?
+Pre nego što korisnik pokrene kviz ili igricu, mora da pogleda kratku reklamu (15–30 sekundi).
+
+Dobijaš novac od prikaza (via AdMob, Unity Ads, itd.).
+
++ Plus: Odrasli korisnici to već znaju s mobilnih igara, nije im strano. – Minus: Moraš integrisati video ads i pratiti korisničko iskustvo.
+
+QR kod za  URL igraonice → moze se okačiti u igraonici
+
+- Napraviti kao welcome paket za igraonice. U promociji kada obilazimo igraonice dati paket u kome se nalazi kartonce sa koinima, onda qr code, i jos nesto, sve ovo moze 
+biti od nekog dummy korisnika u cilju promocije, kasnije mogu dobiti njihov personalizovani paket kada se registruju na portal)
+
+🎁 Paket dobrodošlice – DVA NIVOA:
+🟠 Prvi paket (pre registracije) – “Promo teaser”
+Cilj: Zaintrigirati i motivisati igraonicu da se registruje.
+
+Sadržaj:
+
+✅ Kartica sa QR kodom → vodi na dummy stranicu njihove igraonice
+“Ovako će izgledati vaša stranica na našoj platformi!”
+
+💰 Promo kartica sa novčićima
+“Na poklon dobijate 300 Rodjendanko novčića kada se registrujete – koristite ih za dodatnu promociju!”
+
+🧩 Mini brošura
+
+Ukratko o platformi
+
+Prednosti za igraonicu
+
+Šta mogu da dobiju ako se priključe
+
+QR kod za direktnu registraciju
+
+🎉 Sticker ili magnetić
+“Ponosni partner Rodjendanka” – za izlog, ulaz, ili unutra
+
+🟢 Drugi paket (posle registracije) – “Welcome Kit”
+Cilj: Pojačati lojalnost i zahvaliti im se što su deo zajednice
+
+Sadržaj:
+
+🪪 Personalizovana kartica sa imenom igraonice i linkom/QR kodom do njihove stranice
+“Vaš profil je aktivan! Pogledajte ga ovde.”
+
+🎁 Promo kod za dodatne novčiće
+– Mogu iskoristiti ili podeliti korisnicima kao promociju
+(npr: 10 korisnika koji zakažu preko njih dobijaju -10%)
+
+📦 Mali promo set
+
+Nalepnice za klince (logo Rodjendanko + veseli motivi)
+
+Bedž za osoblje
+
+Brendirani balon ili konfeta
+
+📸 Poziv na zajednički promo story
+“Pošaljite nam vašu fotku iz igraonice i objavićemo vas na Instagramu!”
+→ Gradiš zajednicu i povezanost
+
+🧠 Bonus ideje:
+🎯 Gamifikacija:
+“Kada popunite svoj profil 100%, dobijate dodatni bonus od 100 novčića.”
+
+📥 Offline kupon koji se unosi na sajtu:
+Na promo kartici možeš štampati kodove koji se unose ručno.
+Npr: KOD: IGRAONICA300 → 300 novčića
+
+🤝 Referral kartice za vlasnike igraonica:
+“Preporuči nas kolegi igraonici i oboje dobijate 200 novčića.”
+
+
+>>>>>>> 92e31f3be26097699635118a4605ce3b11243369
