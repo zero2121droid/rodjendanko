@@ -137,4 +137,4 @@ Struktura:
     services: dodatne usluge (torte, baloni, animatori…)
     users: korisnici i autentifikacija (JWT)
     api: serializeri i viewsetovi, api endpoints
-    core: ???
+    wallet: 
