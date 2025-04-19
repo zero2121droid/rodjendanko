@@ -25,11 +25,11 @@ from django.contrib.auth import views as auth_views
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Rodjendanko",
+        title="Rodjendarijum API",
         default_version='v1',
-        description="API Dokumentacija za rodjendanka",
-        terms_of_service="https://rodjendanko.lenitech.org",
-        contact=openapi.Contact(email="admin@rodjendanko.lenitech.org"),
+        description="API Dokumentacija za Rodjendarijum",
+        terms_of_service="https://rodjendarijum.lenitech.org",
+        contact=openapi.Contact(email="admin@rodjendarijum.lenitech.org"),
         license=openapi.License(name="BSD License"),
     ),
     public=True,

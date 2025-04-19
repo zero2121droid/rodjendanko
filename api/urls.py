@@ -1,11 +1,9 @@
 from django.urls import path
-from . import views
+from api.views.v_user import UserViewSet, ChildrenViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-#router.register(r'customers', CustomerViewSet, basename='customers')
+router.register(r'user', UserViewSet, basename='users')
+router.register(r'children', ChildrenViewSet, basename='children')
 
-
-urlpatterns = router.urls + [
-    #path('', api_view, name='api'),
-]
+urlpatterns = router.urls 
