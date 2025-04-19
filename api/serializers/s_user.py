@@ -15,6 +15,7 @@ class ChildrenSerializer(serializers.ModelSerializer):
 # ---------------------------------------------------------------------
 class UserSerializer(serializers.ModelSerializer):
     children = ChildrenSerializer(many=True, read_only=True, source='children_set')
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
