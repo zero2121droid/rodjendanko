@@ -1,12 +1,12 @@
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from wallet.models import Wallet, WalletTransaction
+from wallet.models import CoinsWallet, CoinsTransaction
 from api.serializers.s_wallet import WalletSerializer, WalletTransactionSerializer
 # ---------------------------------------------------------------------
 # Wallet ViewSet
 # ---------------------------------------------------------------------
 class WalletViewSet(viewsets.ModelViewSet):
-    queryset = Wallet.objects.all()
+    queryset = CoinsWallet.objects.all()
     serializer_class = WalletSerializer
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -18,7 +18,7 @@ class WalletViewSet(viewsets.ModelViewSet):
 # Wallet Transaction ViewSet
 # ---------------------------------------------------------------------
 class WalletTransactionViewSet(viewsets.ModelViewSet):
-    queryset = WalletTransaction.objects.all()
+    queryset = CoinsTransaction.objects.all()
     serializer_class = WalletTransactionSerializer
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
