@@ -2,8 +2,9 @@ from django.db import models
 import uuid
 
 class BookingStatus(models.TextChoices):
-    OTVOREN = 'Otvoren'
+    NA_CEKANJU = 'Na čekanju'
     PRIHVACEN = 'Prihvacen'
+    ODBIJEN = 'Odbijen'
     OTKAZAN = 'Otkazan'
 
 class Bookings(models.Model):
@@ -12,7 +13,7 @@ class Bookings(models.Model):
     customer_services = models.ForeignKey('services.CustomerServices', on_delete=models.CASCADE)
     location = models.ForeignKey('playrooms.Location', on_delete=models.CASCADE)
     user = models.ForeignKey('users.User', on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=BookingStatus.choices, default=BookingStatus.OTVOREN)
+    status = models.CharField(max_length=20, choices=BookingStatus.choices, default=BookingStatus.NA_CEKANJU)
     booking_date = models.DateTimeField(auto_now_add=True)
     booking_validation_date = models.DateTimeField(auto_now_add=True)
     booking_type = models.CharField(max_length=20)
