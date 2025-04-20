@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from wallet.models import Wallet, WalletTransaction
+from wallet.models import CoinsWallet, CoinsTransaction
 
 # ---------------------------------------------------------------------
 # Wallet Serializer
 # ---------------------------------------------------------------------
 class WalletSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Wallet
+        model = CoinsWallet
         fields = '__all__'
 
 # ---------------------------------------------------------------------
@@ -14,7 +14,7 @@ class WalletSerializer(serializers.ModelSerializer):
 # ---------------------------------------------------------------------
 class WalletTransactionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = WalletTransaction
+        model = CoinsTransaction
         fields = '__all__'
 
 # ---------------------------------------------------------------------
