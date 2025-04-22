@@ -23,6 +23,7 @@ from drf_yasg import openapi
 from rest_framework_simplejwt import views as jwt_views
 from django.contrib.auth import views as auth_views
 
+
 schema_view = get_schema_view(
     openapi.Info(
         title="Rodjendarijum API",

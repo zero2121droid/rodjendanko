@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -159,8 +160,9 @@ LOGOUT_REDIRECT_URL = ''
 # REST FRAMEWORK default authentication and permission classes
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework.authentication.TokenAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -190,13 +192,13 @@ CORS_ALLOW_CREDENTIALS = True
 #ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY", "b'8PusTxeVS2PXyyS3DNQosWUeP-75Gfvbpdq1cOS0Hjw='")
 ENCRYPTION_KEY = "8PusTxeVS2PXyyS3DNQosWUeP-75Gfvbpdq1cOS0Hjw="
 
-# SIMPLE_JWT = {
-#     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),  # Token expires in 30 minutes
-#     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Refresh token lasts for 7 days
-#     "ROTATE_REFRESH_TOKENS": True,  # Issue a new refresh token each time
-#     "BLACKLIST_AFTER_ROTATION": True,  # Blacklist old refresh tokens
-#     "AUTH_HEADER_TYPES": ("Bearer",),
-# }
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),  # Token expires in 30 minutes
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Refresh token lasts for 7 days
+    "ROTATE_REFRESH_TOKENS": True,  # Issue a new refresh token each time
+    "BLACKLIST_AFTER_ROTATION": True,  # Blacklist old refresh tokens
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
 
 # REST_FRAMEWORK = {
 #     'DEFAULT_AUTHENTICATION_CLASSES': (

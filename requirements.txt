@@ -13,3 +13,4 @@ djangorestframework-simplejwt    # JWT autentifikacija za Django REST Framework 
 pillow==10.4.0                   # Biblioteka za rad sa slikama – koristi se za obradu slika u aplikaciji
 whitenoise==6.2.0                # Omogućava serviranje statičkih fajlova u produkciji – koristi se za statičke resurse
 django-filter==23.2.0            # Omogućava filtriranje podataka u Django aplikacijama – koristi se za napredne upite
+djangorestframework-simplejwt==5.2.2  # JWT autentifikacija za Django REST Framework – koristi se za login/token baziranu zaštitu
