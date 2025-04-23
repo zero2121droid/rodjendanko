@@ -21,9 +21,6 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.username} ({self.email})"
     
-    def clean(self):
-        if self.coins is not None and self.coins < 0:
-            raise ValidationError("Coins cannot be negative")
     
     def save(self, *args, **kwargs):
         self.full_clean()
