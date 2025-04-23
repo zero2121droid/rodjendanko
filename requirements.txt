@@ -14,7 +14,6 @@ pillow==10.4.0                   # Biblioteka za rad sa slikama – koristi se z
 whitenoise==6.2.0                # Omogućava serviranje statičkih fajlova u produkciji – koristi se za statičke resurse
 django-filter==23.2.0            # Omogućava filtriranje podataka u Django aplikacijama – koristi se za napredne upite
 djangorestframework-simplejwt==5.2.2  # JWT autentifikacija za Django REST Framework – koristi se za login/token baziranu zaštitu
-social-auth-app-django==5.1.0     # Omogućava autentifikaciju preko društvenih mreža – koristi se za login putem društvenih mreža
 requests==2.31.0                  # HTTP biblioteka za Python – koristi se za slanje HTTP zahteva
 dj-rest-auth==3.16.0              # REST API za autentifikaciju u Django aplikacijama – koristi se za login/logout funkcionalnosti
 django-allauth==0.52.0            # Omogućava autentifikaciju preko društvenih mreža i email verifikaciju – koristi se za registraciju korisnika
