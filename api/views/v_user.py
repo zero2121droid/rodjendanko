@@ -10,7 +10,7 @@ from rest_framework.permissions import AllowAny
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["name", "last_name", "email", "city", "phone"]
+    search_fields = ["username", "email", "city", "phone"]
     filterset_fields = ["city", "coins"]  
     ordering_fields = ["created_at", "updated_at"]
 
@@ -47,7 +47,7 @@ class ChildrenViewSet(viewsets.ModelViewSet):
     serializer_class = ChildrenSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["name"]
-    filterset_fields = ["user"]
+    filterset_fields = ["username"]
 
     def get_queryset(self):
         user = self.request.user
