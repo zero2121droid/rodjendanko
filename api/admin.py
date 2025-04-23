@@ -10,10 +10,16 @@ admin.site.index_title = "Welcome to Rodjendanko Admin"
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     model = User
+    def get_coins(self, obj):
+        return obj.coins_wallet.coins_balance if obj.coins_wallet else 0
+    get_coins.short_description = 'Coin balans'
+
     fieldsets = UserAdmin.fieldsets + (
         ("Dodatne informacije", {
-            "fields": ("address", "city", "phone", "coins", "description")
+            "fields": ("address", "city", "phone", "description")
         }),
     )
-    list_display = ["username", "email", "is_staff", "coins"]
+
+    list_display = ["username", "email", "is_staff", "get_coins"]
+    readonly_fields = ["get_coins"]
 
