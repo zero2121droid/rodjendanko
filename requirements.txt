@@ -15,5 +15,5 @@ whitenoise==6.2.0                # Omogućava serviranje statičkih fajlova u pr
 django-filter==23.2.0            # Omogućava filtriranje podataka u Django aplikacijama – koristi se za napredne upite
 djangorestframework-simplejwt==5.2.2  # JWT autentifikacija za Django REST Framework – koristi se za login/token baziranu zaštitu
 #requests==2.31.0                  # HTTP biblioteka za Python – koristi se za slanje HTTP zahteva
-#dj-rest-auth==3.16.0              # REST API za autentifikaciju u Django aplikacijama – koristi se za login/logout funkcionalnosti
-#django-allauth==0.52.0            # Omogućava autentifikaciju preko društvenih mreža i email verifikaciju – koristi se za registraciju korisnika
+dj-rest-auth                     # REST API za autentifikaciju u Django aplikacijama – koristi se za login/logout funkcionalnosti
+django-allauth                     # Omogućava autentifikaciju preko društvenih mreža i email verifikaciju – koristi se za registraciju korisnika
