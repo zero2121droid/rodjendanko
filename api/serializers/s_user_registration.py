@@ -24,6 +24,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password')
         user = User(**validated_data)
         user.set_password(password)
-        user.coins = 100  # postavi početni broj novčića
+        from wallet.models import CoinsWallet
+        wallet = CoinsWallet.objects.create(user=user, balance=100)  # Početni iznos je 100
+        user.coins_wallet = wallet
         user.save()
         return user

@@ -10,7 +10,7 @@ class User(AbstractUser):
     address = models.TextField(null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
-    coins = models.IntegerField(default=0)
+    coins_wallet = models.ForeignKey('wallet.CoinsWallet', on_delete=models.SET_NULL, null=True, blank=True, related_name='user_wallet')
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
