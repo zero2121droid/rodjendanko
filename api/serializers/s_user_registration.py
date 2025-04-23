@@ -24,5 +24,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password')
         user = User(**validated_data)
         user.set_password(password)
+        user.coins = 100  # postavi početni broj novčića
         user.save()
         return user
