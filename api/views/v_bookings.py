@@ -21,7 +21,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
 
         # 👇 Slanje notifikacije nakon kreiranja rezervacije
         create_notification(
-            user=self.request.user,
+            recipient=self.request.user,
             title="Uspešna rezervacija",
             message=f"Vaša rezervacija za {booking.location.name} je uspešno kreirana.",
             #link=f"/moje-rezervacije/{booking.id}"
