@@ -26,6 +26,7 @@ router.register(r'location-working-hours', LocationWorkingHoursViewSet, basename
 router.register(r'wallet', WalletViewSet, basename='wallet')
 router.register(r'wallet-transactions', WalletTransactionViewSet, basename='wallet-transactions')
 router.register(r'notifications', NotificationViewSet, basename='notification')
-router.register(r'register', UserRegistrationView, basename='user-registration')
 
-urlpatterns = router.urls 
+urlpatterns = router.urls + [
+    path('register/', UserRegistrationView.as_view(), name='user-registration'),
+]
