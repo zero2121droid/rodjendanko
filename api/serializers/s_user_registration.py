@@ -2,12 +2,12 @@ from rest_framework import serializers
 from users.models import User
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-    password2 = serializers.CharField(write_only=True)  # za potvrdu lozinke
+    password = serializers.CharField(write_only=True, style={"input_type": "password"})
+    password2 = serializers.CharField(write_only=True, style={"input_type": "password"})  # za potvrdu lozinke
 
     class Meta:
         model = User
-        fields = ['username', 'firstname', 'lastname','email', 'password', 'password2', 'city', 'phone']
+        fields = ['username','email', 'password', 'password2', 'address','city', 'phone', 'description']
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():

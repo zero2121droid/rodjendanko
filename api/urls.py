@@ -8,6 +8,7 @@ from api.views.v_bookings import BookingsViewSet
 from api.views.v_location import LocationViewSet, LocationImagesViewSet, LocationWorkingHoursViewSet
 from api.views.v_notifications import NotificationViewSet
 from api.views.v_wallet import WalletViewSet, WalletTransactionViewSet
+from api.views.v_user_registration import UserRegistrationView
 
 
 router = DefaultRouter()
@@ -25,5 +26,6 @@ router.register(r'location-working-hours', LocationWorkingHoursViewSet, basename
 router.register(r'wallet', WalletViewSet, basename='wallet')
 router.register(r'wallet-transactions', WalletTransactionViewSet, basename='wallet-transactions')
 router.register(r'notifications', NotificationViewSet, basename='notification')
+router.register(r'register', UserRegistrationView, basename='user-registration')
 
 urlpatterns = router.urls 

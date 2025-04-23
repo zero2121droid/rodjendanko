@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     "django_filters",
     'rest_framework',
     'services',
@@ -54,6 +55,12 @@ INSTALLED_APPS = [
     'users',
     'notifications',
     'playrooms',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -125,6 +132,15 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+REST_USE_JWT = True
 
 
 # Internationalization
@@ -202,6 +218,17 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
-
-
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = '60174222574-s0u7hh7mq604vc49mbk9n6v65gjjialh.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_SECRET = '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'

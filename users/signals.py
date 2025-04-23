@@ -23,7 +23,7 @@ User = get_user_model()
 def welcome_notification(sender, instance, created, **kwargs):
     if created:
         create_notification(
-            user=instance,
+            recipient=instance,
             title="Dobrodošli!",
             message="Uspešno ste se registrovali na Rodjendarijum.",
         )
