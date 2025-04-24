@@ -11,6 +11,7 @@ from api.serializers.s_user import CustomTokenObtainPairSerializer
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.utils.crypto import get_random_string
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -70,7 +71,8 @@ class UserViewSet(viewsets.ModelViewSet):
             user, created = User.objects.get_or_create(email=email, defaults={
                 'username': email,
                 'first_name': first_name,
-                'last_name': last_name
+                'last_name': last_name,
+                'password': get_random_string(32)
             })
 
             refresh = RefreshToken.for_user(user)
