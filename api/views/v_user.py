@@ -16,7 +16,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["username", "email", "city", "phone"]
-    filterset_fields = ["city", "coins"]  
+    filterset_fields = ["city", "coins_wallet"]  
     ordering_fields = ["created_at", "updated_at"]
 
     def get_queryset(self):
