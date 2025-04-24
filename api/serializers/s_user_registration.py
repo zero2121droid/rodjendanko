@@ -31,8 +31,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
         # Kreiraj wallet za korisnika i postavi početni broj coina
         from wallet.models import CoinsWallet
-        wallet = CoinsWallet.objects.create(user=user, coins_balance=100)  # Početni iznos je 100
-        user.coins_wallet = wallet  # Poveži wallet sa korisnikom
-        user.save()  # Sačuvaj korisnika sa povezanim wallet-om
-
+        CoinsWallet.objects.create(user=user, coins_balance=100)  # Početni iznos je 100
+        
         return user
