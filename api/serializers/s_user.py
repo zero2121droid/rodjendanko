@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from users.models import User, Children
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 # ---------------------------------------------------------------------
 # Children Serializer
@@ -50,4 +51,19 @@ class UserSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
         return instance
+    
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # dodatna polja u token ako želiš
+        token['email'] = user.email
+        return token
+
+    def validate(self, attrs):
+        # override default validacije da koristi email
+        username_field = User.EMAIL_FIELD
+        attrs['username'] = attrs.get('email')
+        return super().validate(attrs)
+# ---------------------------------------------------------------------
 
