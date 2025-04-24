@@ -19,18 +19,4 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"password": "Lozinke se ne poklapaju."})
         return attrs
 
-    def create(self, validated_data):
-        # Ukloni 'password2' jer nije potreban za kreiranje korisnika
-        validated_data.pop('password2')  
-        password = validated_data.pop('password')
-
-        # Kreiraj korisnika
-        user = User(**validated_data)
-        user.set_password(password)
-        user.save()  # Spasi korisnika pre nego što kreiraš wallet
-
-        # Kreiraj wallet za korisnika i postavi početni broj coina
-        from wallet.models import CoinsWallet
-        CoinsWallet.objects.create(user=user, coins_balance=100)  # Početni iznos je 100
-        
-        return user
+    

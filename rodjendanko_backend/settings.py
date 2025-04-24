@@ -233,3 +233,17 @@ SOCIALACCOUNT_PROVIDERS = {
 
 SOCIAL_AUTH_GOOGLE_CLIENT_ID = '60174222574-s0u7hh7mq604vc49mbk9n6v65gjjialh.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_SECRET = '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'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
