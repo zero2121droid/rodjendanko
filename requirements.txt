@@ -17,3 +17,4 @@ djangorestframework-simplejwt==5.2.2  # JWT autentifikacija za Django REST Frame
 requests                         # HTTP biblioteka za Python – koristi se za slanje HTTP zahteva
 dj-rest-auth                     # REST API za autentifikaciju u Django aplikacijama – koristi se za login/logout funkcionalnosti
 django-allauth                     # Omogućava autentifikaciju preko društvenih mreža i email verifikaciju – koristi se za registraciju korisnika
+google-auth                     # Google autentifikacija – koristi se za login putem Google naloga

@@ -8,6 +8,10 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from api.serializers.s_user import CustomTokenObtainPairSerializer
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -47,6 +51,38 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    def google_login(self, request):
+        """
+        Endpoint za prijavu korisnika pomoću Google ID tokena
+        """
+        token = request.data.get('id_token')
+        if not token:
+            return Response({'error': 'id_token je obavezan'}, status=400)
+
+        try:
+            idinfo = id_token.verify_oauth2_token(token, google_requests.Request())
+            email = idinfo['email']
+            first_name = idinfo.get('given_name', '')
+            last_name = idinfo.get('family_name', '')
+
+            user, created = User.objects.get_or_create(email=email, defaults={
+                'username': email,
+                'first_name': first_name,
+                'last_name': last_name
+            })
+
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'email': user.email,
+                'created': created
+            })
+
+        except Exception as e:
+            return Response({'error': 'Nevalidan token', 'detalji': str(e)}, status=400)
 
 class ChildrenViewSet(viewsets.ModelViewSet):
     serializer_class = ChildrenSerializer
