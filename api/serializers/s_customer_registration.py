@@ -36,7 +36,6 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
         # Kreiramo Customer (igraonicu) i povezujemo je sa korisnikom i wallet-om
         customer = Customer.objects.create(
             user=user,  # povezujemo korisnika sa igraonicom
-            wallet=wallet,  # povezujemo wallet sa igraonicom
             **validated_data
         )
 
