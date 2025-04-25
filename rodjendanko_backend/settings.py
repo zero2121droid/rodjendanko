@@ -201,7 +201,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",           
     "http://127.0.0.1:3000",
     "https://itmtools.itm-rz.de",  
-    "192.168.2.20:5173",
+    "http://192.168.2.20:5173",
     "https://192.168.2.20",
     "http://localhost:5173",
 ]
