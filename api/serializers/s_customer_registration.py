@@ -27,7 +27,7 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
         user = user_serializer.save()
         
         # 2. Kreiraj wallet vezan za user-a
-        CoinsWallet.objects.create(user=user, coins=100)
+        CoinsWallet.objects.create(user=user, coins_balance=100)
         
         # 3. Ako iz nekog razloga postoji 'wallet' u validated_data — ukloni ga
         validated_data.pop("wallet", None)
