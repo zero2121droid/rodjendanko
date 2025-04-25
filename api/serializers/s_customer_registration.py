@@ -4,30 +4,35 @@ from users.models import User
 from api.serializers.s_user_registration import UserRegistrationSerializer
 
 class CustomerRegistrationSerializer(serializers.ModelSerializer):
-    user = UserRegistrationSerializer()
+    user = UserRegistrationSerializer()  # Koristi serializer za User model
 
     class Meta:
         model = Customer
         fields = [
             'id', 'user', 'name', 'address1', 'address2', 'phone', 'postal_code', 'city',
             'state', 'facebook_url', 'instagram_url', 'customer_url',
-            'owner_name', 'owner_lastname', 'owner_email', 'owner_password', 'description'
+            'owner_name', 'owner_lastname', 'description'
         ]
         extra_kwargs = {
-            'owner_password': {'write_only': True},
             'user': {'required': True},
         }
 
     def create(self, validated_data):
+        # Ekstraktujemo podatke o korisniku
         user_data = validated_data.pop('user')
-        user_data['username'] = user_data['email']
-        user = UserRegistrationSerializer().create(user_data)
-        user.user_type = 'customer'
-        user.save()
 
+        # Korisnik dobija email kao username
+        user_data['username'] = user_data['email']
+
+        # Kreiramo korisnika (vlasnika)
+        user_serializer = UserRegistrationSerializer(data=user_data)
+        user_serializer.is_valid(raise_exception=True)
+        user = user_serializer.save()
+
+        # Kreiramo Customer (igraonicu) i povezujemo je sa korisnikom
         customer = Customer.objects.create(
-            user=user,
-            owner_email=user.email,
+            user=user,  # povezujemo korisnika sa igraonicom
             **validated_data
         )
+
         return customer
