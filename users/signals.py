@@ -24,14 +24,13 @@ def create_wallet_for_user(sender, instance, created, **kwargs):
     logger.info(f"[User Notif] Poslata notifikacija dobrodošlice korisniku {instance.username}")
 
 @receiver(post_save, sender=Customer)
-def create_wallet_for_customer(sender, instance, created, **kwargs):
-    if created and not CoinsWallet.objects.filter(customer=instance).exists():
-        CoinsWallet.objects.create(customer=instance, coins_balance=100)
-        logger.info(f"[Customer Wallet] Kreiran wallet za korisnika {instance.name} (ID: {instance.id})")
-    create_notification(
-            recipient=instance,
+def create_notification_for_customer(sender, instance, created, **kwargs):
+    if created:
+        # Kreiraj notifikaciju za igraonicu (Customer)
+        create_notification(
+            recipient=instance.user,  # Ovo šalje notifikaciju vlasniku igraonice
             title="Dobrodošli!",
-            message="Uspešno ste se registrovali na Rodjendarijum.",
+            message="Uspešno ste se registrovali na Rodjendarijum kao vlasnik igraonice.",
         )
-    logger.info(f"[Customer Notif] Poslata notifikacija dobrodošlice korisniku {instance.name}")
+        logger.info(f"[Customer Notif] Poslata notifikacija dobrodošlice korisniku {instance.name}")
 
