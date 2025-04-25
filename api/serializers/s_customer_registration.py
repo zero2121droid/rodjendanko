@@ -23,3 +23,8 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
 
         customer = Customer.objects.create(user=user, owner_email=user.email, **validated_data)
         return customer
+    
+    def to_representation(self, instance): # vraća sve podatke o korisniku
+        rep = super().to_representation(instance)
+        rep['user'] = UserRegistrationSerializer(instance.user).data
+        return rep
