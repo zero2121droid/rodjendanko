@@ -4,7 +4,7 @@ from users.models import User
 from api.serializers.s_user_registration import UserRegistrationSerializer
 
 class CustomerRegistrationSerializer(serializers.ModelSerializer):
-    user = UserRegistrationSerializer()  # Koristi serializer za User model
+    user = UserRegistrationSerializer()
 
     class Meta:
         model = Customer
@@ -34,5 +34,10 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
             user=user,  # povezujemo korisnika sa igraonicom
             **validated_data
         )
+
+        # Kreiramo povezani CoinsWallet objekat
+        wallet = CoinsWallet.objects.create(user=user)
+        customer.wallet = wallet  # povezujemo wallet sa customer
+        customer.save()
 
         return customer

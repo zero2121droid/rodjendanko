@@ -12,6 +12,7 @@ class User(AbstractUser):
         ('partner', 'Partner'),
         ('user', 'Regular User'),
     ]
+    username = models.CharField(max_length=255, null=True, blank=True, unique=True)
     email = models.EmailField(unique=True)
     address = models.TextField(null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
