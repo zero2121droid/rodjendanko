@@ -27,7 +27,9 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
         user = user_serializer.save()
 
         # 2. Kreiraj wallet samo ako ne postoji
-        CoinsWallet.objects.get_or_create(user=user, defaults={"coins_balance": 100})
+        if user:
+            # Korisnik je sačuvan, sada kreiraj wallet
+            CoinsWallet.objects.get_or_create(user=user, defaults={"coins_balance": 100})
 
         # 3. Ukloni eventualni wallet key ako slučajno dođe kroz validated_data
         validated_data.pop("wallet", None)
