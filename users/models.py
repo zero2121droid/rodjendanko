@@ -6,10 +6,17 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     #id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    USER_TYPES = [
+        ('admin', 'Admin'),
+        ('customer', 'Customer'),
+        ('partner', 'Partner'),
+        ('user', 'Regular User'),
+    ]
     email = models.EmailField(unique=True)
     address = models.TextField(null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
+    user_type = models.CharField(max_length=20, choices=USER_TYPES, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

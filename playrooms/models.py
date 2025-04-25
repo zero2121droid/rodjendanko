@@ -3,6 +3,7 @@ import uuid
 
 class Customer(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField('users.User', on_delete=models.CASCADE, null=True, blank=True, related_name='customer_profile')
     name = models.CharField(max_length=255)
     address1 = models.TextField(null=True, blank=True)
     address2 = models.TextField(null=True, blank=True)

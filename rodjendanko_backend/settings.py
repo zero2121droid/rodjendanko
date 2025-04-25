@@ -197,13 +197,14 @@ CSRF_TRUSTED_ORIGINS = [
     "https://rodjendanko.lenitech.org",
 ]
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",           
-#     "http://127.0.0.1:3000",
-#     "https://itmtools.itm-rz.de",  
-#     "192.168.2.20:5173",
-#     "https://192.168.2.20",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",           
+    "http://127.0.0.1:3000",
+    "https://itmtools.itm-rz.de",  
+    "192.168.2.20:5173",
+    "https://192.168.2.20",
+    "http://localhost:5173",
+]
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
