@@ -5,10 +5,11 @@ from api.serializers.s_customer_registration import CustomerRegistrationSerializ
 from rest_framework.permissions import AllowAny
 
 class CustomerRegistrationView(APIView):
-    permission_classes = [AllowAny]
-    def post(self, request):
+    #permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
         serializer = CustomerRegistrationSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Uspešna registracija."}, status=status.HTTP_201_CREATED)
+            customer = serializer.save()
+            return Response(CustomerRegistrationSerializer(customer).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
