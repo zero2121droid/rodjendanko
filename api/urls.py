@@ -9,6 +9,8 @@ from api.views.v_location import LocationViewSet, LocationImagesViewSet, Locatio
 from api.views.v_notifications import NotificationViewSet
 from api.views.v_wallet import WalletViewSet, WalletTransactionViewSet
 from api.views.v_user_registration import UserRegistrationView
+from api.views.v_customer import CustomerViewSet
+from api.views.v_customer_registration import CustomerRegistrationView
 
 
 router = DefaultRouter()
@@ -28,5 +30,6 @@ router.register(r'wallet-transactions', WalletTransactionViewSet, basename='wall
 router.register(r'notifications', NotificationViewSet, basename='notification')
 
 urlpatterns = router.urls + [
+    path('api/customer/register/', CustomerRegistrationView.as_view(), name='customer-register'),
     path('register/', UserRegistrationView.as_view(), name='user-registration'),
 ]

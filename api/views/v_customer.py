@@ -14,12 +14,12 @@ from rest_framework.decorators import action
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     permission_classes = [AllowAny]
-    serializer_class = CustomerRegistrationSerializer  # koristimo novi serializer
+    serializer_class = CustomerSerializer  # koristimo novi serializer
 
-    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
-    def register(self, request):
-        serializer = CustomerRegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            customer = serializer.save()
-            return Response(CustomerRegistrationSerializer(customer).data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    # def register(self, request):
+    #     serializer = CustomerRegistrationSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         customer = serializer.save()
+    #         return Response(CustomerRegistrationSerializer(customer).data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
