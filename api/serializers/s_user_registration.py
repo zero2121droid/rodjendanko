@@ -26,5 +26,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password')
         user = User(**validated_data)
         user.set_password(password)  # Hash-uj lozinku
+        user.user_type = 'user' 
         user.save()
         return user
