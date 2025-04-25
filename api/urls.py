@@ -30,6 +30,6 @@ router.register(r'wallet-transactions', WalletTransactionViewSet, basename='wall
 router.register(r'notifications', NotificationViewSet, basename='notification')
 
 urlpatterns = router.urls + [
-    path('api/customer/register/', CustomerRegistrationView.as_view(), name='customer-register'),
+    path('customer/register/', CustomerRegistrationView.as_view(), name='customer-register'),
     path('register/', UserRegistrationView.as_view(), name='user-registration'),
 ]
