@@ -2,6 +2,7 @@ from rest_framework import serializers
 from playrooms.models import Customer
 from users.models import User
 from api.serializers.s_user_registration import UserRegistrationSerializer
+from wallet.models import CoinsWallet
 
 class CustomerRegistrationSerializer(serializers.ModelSerializer):
     user = UserRegistrationSerializer()
