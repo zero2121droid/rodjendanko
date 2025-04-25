@@ -19,24 +19,20 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        # Ekstraktujemo podatke o korisniku
-        user_data = validated_data.pop('user')
-
-        # Korisnik dobija email kao username
-        user_data['username'] = user_data['email']
-
-        # Kreiramo korisnika (vlasnika)
+        user_data = validated_data.pop("user")
+        
+        # 1. Kreiraj user-a
         user_serializer = UserRegistrationSerializer(data=user_data)
         user_serializer.is_valid(raise_exception=True)
         user = user_serializer.save()
-
-        # Provera da li korisnik već ima CoinsWallet, ako nema, kreiramo ga
-        wallet, created = CoinsWallet.objects.get_or_create(user=user)
         
-        # Kreiramo Customer (igraonicu) i povezujemo je sa korisnikom i wallet-om
-        customer = Customer.objects.create(
-            user=user,  # povezujemo korisnika sa igraonicom
-            **validated_data
-        )
+        # 2. Kreiraj wallet vezan za user-a
+        CoinsWallet.objects.create(user=user, coins=100)
+        
+        # 3. Ako iz nekog razloga postoji 'wallet' u validated_data — ukloni ga
+        validated_data.pop("wallet", None)
+        
+        # 4. Kreiraj customera
+        customer = Customer.objects.create(user=user, **validated_data)
 
         return customer
