@@ -5,7 +5,7 @@ from api.serializers.s_customer_registration import CustomerRegistrationSerializ
 from rest_framework.permissions import AllowAny
 
 class CustomerRegistrationView(APIView):
-    #permission_classes = [AllowAny]
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         serializer = CustomerRegistrationSerializer(data=request.data)
