@@ -17,7 +17,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerSerializer
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["name", "last_name", "email", "city", "phone"]
+    search_fields = ["name", "owner_lastname", "owner_email", "city", "phone"]
     filterset_fields = ["city"]  # primer za precizno filtriranje
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
@@ -27,6 +27,5 @@ class CustomerViewSet(viewsets.ModelViewSet):
         serializer = CustomerRegistrationSerializer(data=request.data)
         if serializer.is_valid():
             customer = serializer.save()
-            response_serializer = CustomerRegistrationSerializer(customer)
-            return Response({"message": "Igraonica uspešno registrovana!"}, status=status.HTTP_201_CREATED)
+            return Response(CustomerRegistrationSerializer(customer).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

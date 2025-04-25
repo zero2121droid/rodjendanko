@@ -8,23 +8,26 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Customer
-        fields = '__all__'
-        read_only_fields = ['created_at', 'updated_at', 'coins']
+        fields = [
+            'id', 'user', 'name', 'address1', 'address2', 'phone', 'postal_code', 'city',
+            'state', 'facebook_url', 'instagram_url', 'customer_url',
+            'owner_name', 'owner_lastname', 'owner_email', 'owner_password', 'description'
+        ]
         extra_kwargs = {
-            'user': {'required': True}
+            'owner_password': {'write_only': True},
+            'user': {'required': True},
         }
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        user_data['username'] = user_data['email']  # ako koristiš email kao username
+        user_data['username'] = user_data['email']
         user = UserRegistrationSerializer().create(user_data)
-        user.user_type = 'customer'  # ako imaš `user_type` polje
+        user.user_type = 'customer'
         user.save()
 
-        customer = Customer.objects.create(user=user, owner_email=user.email, **validated_data)
+        customer = Customer.objects.create(
+            user=user,
+            owner_email=user.email,
+            **validated_data
+        )
         return customer
-    
-    def to_representation(self, instance): # vraća sve podatke o korisniku
-        rep = super().to_representation(instance)
-        rep['user'] = UserRegistrationSerializer(instance.user).data
-        return rep
