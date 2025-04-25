@@ -27,5 +27,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         serializer = CustomerRegistrationSerializer(data=request.data)
         if serializer.is_valid():
             customer = serializer.save()
-            return Response(CustomerRegistrationSerializer(customer).data, status=status.HTTP_201_CREATED)
+            # ovde je ključno da ponovo koristiš CustomerRegistrationSerializer za response
+            response_serializer = CustomerRegistrationSerializer(customer)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
