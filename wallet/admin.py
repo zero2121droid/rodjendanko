@@ -4,7 +4,7 @@ from django.utils import timezone
 
 @admin.register(CoinsWallet)
 class CoinsWalletAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'customer', 'coins_balance', 'created_at', 'updated_at')
+    list_display = ('id', 'user','coins_balance', 'created_at', 'updated_at')
     list_filter = ('created_at', 'updated_at')
     search_fields = ('user__name', 'customer__name')
     readonly_fields = ('created_at', 'updated_at')
