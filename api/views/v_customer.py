@@ -16,6 +16,8 @@ class CustomerViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     serializer_class = CustomerSerializer  # koristimo novi serializer
 
+
+
     # @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     # def register(self, request):
     #     serializer = CustomerRegistrationSerializer(data=request.data)
