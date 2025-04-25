@@ -30,9 +30,9 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
         user_serializer.is_valid(raise_exception=True)
         user = user_serializer.save()
 
-        # Kreiramo povezani CoinsWallet objekat, povezan sa korisnikom
-        wallet = CoinsWallet.objects.create(user=user)
-
+        # Provera da li korisnik već ima CoinsWallet, ako nema, kreiramo ga
+        wallet, created = CoinsWallet.objects.get_or_create(user=user)
+        
         # Kreiramo Customer (igraonicu) i povezujemo je sa korisnikom i wallet-om
         customer = Customer.objects.create(
             user=user,  # povezujemo korisnika sa igraonicom
