@@ -8,6 +8,7 @@ class CoinsWalletAdmin(admin.ModelAdmin):
     list_filter = ('created_at', 'updated_at')
     search_fields = ('user__name', 'customer__name')
     readonly_fields = ('created_at', 'updated_at')
+    ordering = ["created_at"]
     actions = ['add_10_coins', 'subtract_10_coins']
 
     def add_10_coins(self, request, queryset):
