@@ -8,12 +8,14 @@ class LocationAdmin(admin.ModelAdmin):
     list_display = ("location_name", "customer", "location_address", "created_at")
     search_fields = ("location_name", "customer__name", "location_address")
     list_filter = ("customer", "location_name")
+    ordering = ["-created_at"]
 
 @admin.register(LocationImages)
 class LocationImagesAdmin(admin.ModelAdmin):
     list_display = ("location", "location_image_url", "upload_date")
     list_filter = ("location",)
     search_fields = ("location__location_name", "location_image_url")
+    ordering = ["-created_at"]
 
 @admin.register(LocationWorkingHours)
 class LocationWorkingHoursAdmin(admin.ModelAdmin):
@@ -21,3 +23,4 @@ class LocationWorkingHoursAdmin(admin.ModelAdmin):
     ordering = ("location", "day_of_week")
     list_filter = ("location", "day_of_week")
     search_fields = ("location__location_name",)
+    ordering = ["-created_at"]

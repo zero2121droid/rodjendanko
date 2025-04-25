@@ -22,4 +22,5 @@ class CustomUserAdmin(UserAdmin):
 
     list_display = ["username", "email", "is_staff", "get_coins"]
     readonly_fields = ["get_coins"]
+    ordering = ["-created_at"]
 
