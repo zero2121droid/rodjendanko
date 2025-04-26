@@ -15,13 +15,8 @@ class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     permission_classes = [AllowAny]
     serializer_class = CustomerSerializer  # koristimo novi serializer
-
-
-
-    # @action(detail=False, methods=['post'], permission_classes=[AllowAny])
-    # def register(self, request):
-    #     serializer = CustomerRegistrationSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         customer = serializer.save()
-    #         return Response(CustomerRegistrationSerializer(customer).data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["user__email", "first_name", "last_name"]
+    filterset_fields = ["user"]  # primer za precizno filtriranje
+    ordering_fields = ["created_at", "updated_at"]
+    ordering = ["created_at"]  # defaultno sortiranje po created_at

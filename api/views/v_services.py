@@ -7,7 +7,6 @@ from api.serializers.s_services import CustomerServicesSerializer, PartnerServic
 # Customer Services ViewSet
 # ---------------------------------------------------------------------
 class CustomerServicesViewSet(viewsets.ModelViewSet):
-    queryset = CustomerServices.objects.all()
     serializer_class = CustomerServicesSerializer
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -15,11 +14,16 @@ class CustomerServicesViewSet(viewsets.ModelViewSet):
     filterset_fields = ["service_type", "location"]  # primer za precizno filtriranje
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            return CustomerServices.objects.all()
+        return CustomerServices.objects.filter(location__customer__user=user)
 # ---------------------------------------------------------------------
 # Partner Services ViewSet
 # ---------------------------------------------------------------------
 class PartnerServicesViewSet(viewsets.ModelViewSet):
-    queryset = PartnerServices.objects.all()
     serializer_class = PartnerServicesSerializer
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -27,11 +31,15 @@ class PartnerServicesViewSet(viewsets.ModelViewSet):
     filterset_fields = ["customer"]  # primer za precizno filtriranje
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            return PartnerServices.objects.all()
+        return PartnerServices.objects.filter(customer__user=user)
 # ---------------------------------------------------------------------
 # Other Services ViewSet
 # ---------------------------------------------------------------------
 class OtherServicesViewSet(viewsets.ModelViewSet):
-    queryset = OtherServices.objects.all()
     serializer_class = OtherServicesSerializer
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -39,11 +47,15 @@ class OtherServicesViewSet(viewsets.ModelViewSet):
     filterset_fields = ["customer"]  # primer za precizno filtriranje
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            return OtherServices.objects.all()
+        return OtherServices.objects.filter(customer__user=user)
 # ---------------------------------------------------------------------
 # Services Images ViewSet
 # ---------------------------------------------------------------------
 class ServicesImagesViewSet(viewsets.ModelViewSet):
-    queryset = ServicesImages.objects.all()
     serializer_class = ServicesImagesSerializer
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -51,4 +63,9 @@ class ServicesImagesViewSet(viewsets.ModelViewSet):
     filterset_fields = ["service_type"]  # primer za precizno filtriranje
     ordering_fields = ["upload_date", "created_at", "updated_at"]
     ordering = ["upload_date"]  # defaultno sortiranje po upload_date
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            return ServicesImages.objects.all()
+        return ServicesImages.objects.filter(service_id__customer__user=user)
 # ---------------------------------------------------------------------

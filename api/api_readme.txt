@@ -44,3 +44,6 @@ Google login:
 Nakon svakog login-a (bilo običnog ili Google), frontend treba da čuva access i refresh tokene (npr. u localStorage).
 Svi naredni API pozivi ka backendu treba da imaju Authorization header:
     Authorization: Bearer <access_token>
+
+Pretraga:
+  - ?search=neki_tekst

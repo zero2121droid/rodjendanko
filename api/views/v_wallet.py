@@ -17,7 +17,6 @@ class WalletViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-
         if user.is_staff:
             return CoinsWallet.objects.all()
         return CoinsWallet.objects.filter(user=user)

@@ -15,7 +15,7 @@ class Bookings(models.Model):
     user = models.ForeignKey('users.User', on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=BookingStatus.choices, default=BookingStatus.NA_CEKANJU)
     booking_date = models.DateTimeField(auto_now_add=True)
-    booking_validation_date = models.DateTimeField(auto_now_add=True)
+    booking_validation_date = models.DateTimeField(null=True, blank=True)
     booking_type = models.CharField(max_length=20)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
