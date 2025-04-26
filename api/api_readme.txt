@@ -47,3 +47,15 @@ Svi naredni API pozivi ka backendu treba da imaju Authorization header:
 
 Pretraga:
   - ?search=neki_tekst
+
+Kada u frontendu Owner kreira lokaciju dovoljno je u request proslediti sledece:
+Owner uopšte ne mora ni da zna koji mu je customer_id.
+✅ Na backendu sve automatski povezujemo.
+✅ Frontend šalje samo:
+    {
+        "location_name": "Igraonica Sveznalica",
+        "location_address": "Ulica Petra Petrovića 12, Beograd",
+        "description": "Velika igraonica sa 3 rođendaonice.",
+        "location_latitude": 44.7866,
+        "location_longitude": 20.4489
+    }

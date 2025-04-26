@@ -7,8 +7,7 @@ class Customer(models.Model):
     public_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
     user = models.OneToOneField('users.User', on_delete=models.CASCADE, null=True, blank=True, related_name='customer_profile')
     name = models.CharField(max_length=255)
-    address1 = models.TextField(null=True, blank=True)
-    address2 = models.TextField(null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
     postal_code = models.IntegerField(null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
@@ -20,7 +19,6 @@ class Customer(models.Model):
     owner_lastname = models.CharField(max_length=255, null=True, blank=True)
     owner_email = models.EmailField(unique=True, null=True, blank=True)
     owner_password = models.CharField(max_length=255, null=True, blank=True)
-    coins = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     description = models.TextField(null=True, blank=True)
@@ -51,7 +49,7 @@ class Location(models.Model):
     location_latitude = models.FloatField(null=True, blank=True)
     location_longitude = models.FloatField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updates_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.location_name
@@ -67,6 +65,7 @@ class Location(models.Model):
                 except:
                     pass
             self.public_id = f"LOC{next_number:03d}"
+        super().save(*args, **kwargs)
     
     class Meta: # korisno za prilagodjavanje modela, omogucava postavljanje ljudskih imena za modele, redosled sortiranja, indeksa i drugih opcija
         verbose_name = "Location"
@@ -75,7 +74,7 @@ class Location(models.Model):
 
 class LocationImages(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
     location_image_url = models.TextField(null=True, blank=True)
     upload_date = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -87,7 +86,7 @@ class LocationImages(models.Model):
 
 class LocationWorkingHours(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
     day_of_week = models.IntegerField(null=True, blank=True)
     location_opening_time = models.TimeField(null=True, blank=True)
     location_closing_time = models.TimeField(null=True, blank=True)

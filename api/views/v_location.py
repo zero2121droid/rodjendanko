@@ -1,6 +1,7 @@
+from django.forms import ValidationError
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from playrooms.models import Location, LocationImages, LocationWorkingHours
+from playrooms.models import Customer, Location, LocationImages, LocationWorkingHours
 from api.serializers.s_location import LocationSerializer, LocationImagesSerializer, LocationWorkingHoursSerializer
 # ---------------------------------------------------------------------
 # Location ViewSet
@@ -19,6 +20,22 @@ class LocationViewSet(viewsets.ModelViewSet):
         if user.is_staff:
             return Location.objects.all()
         return Location.objects.filter(customer__user=user)  # filtriraj po korisniku koji je vlasnik lokacije
+    
+    # -------------------------------------------------
+    # Ova funkcija perform_update se poziva kada se kreira nova lokacija.
+    # Kada frontend pošalje POST request za kreiranje lokacije, NE šalje customer.
+    # Backend u perform_create() proveri koji customer pripada ulogovanom korisniku (user.customer_profile).
+    # Ako postoji, automatski ga ubaci u snimanje (serializer.save(customer=customer)).
+    # Ako ne postoji, vrati grešku da user nema Customer (što bi inače značilo da nije Owner ili je neki problem).
+    # -------------------------------------------------
+    def perform_create(self, serializer):
+        user = self.request.user
+        try:
+            customer = user.customer_profile
+        except Customer.DoesNotExist:
+            raise ValidationError("Niste povezani ni sa jednom igraonicom.")
+
+        serializer.save(customer=customer)
 # ---------------------------------------------------------------------
 # Location Images ViewSet
 # --------------------------------------------------------------------- 
@@ -36,6 +53,19 @@ class LocationImagesViewSet(viewsets.ModelViewSet):
         if user.is_staff:
             return LocationImages.objects.all()
         return LocationImages.objects.filter(location__customer__user=user) 
+    
+    def perform_create(self, serializer):
+        user = self.request.user
+        location_id = self.request.data.get('location')
+        if not location_id:
+            raise ValidationError("Location ID is required.")
+
+        try:
+            location = Location.objects.get(id=location_id, customer__user=user)
+        except Location.DoesNotExist:
+            raise ValidationError("Location not found or you don't have permission.")
+
+        serializer.save(location=location)
 # ---------------------------------------------------------------------
 # Location Working Hours ViewSet
 # ---------------------------------------------------------------------
@@ -53,4 +83,17 @@ class LocationWorkingHoursViewSet(viewsets.ModelViewSet):
         if user.is_staff:
             return LocationWorkingHours.objects.all()
         return LocationWorkingHours.objects.filter(location__customer__user=user)
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        location_id = self.request.data.get('location')
+        if not location_id:
+            raise ValidationError("Location ID is required.")
+
+        try:
+            location = Location.objects.get(id=location_id, customer__user=user)
+        except Location.DoesNotExist:
+            raise ValidationError("Location not found or you don't have permission.")
+
+        serializer.save(location=location)
 # ---------------------------------------------------------------------
