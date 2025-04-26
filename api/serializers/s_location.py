@@ -5,7 +5,7 @@ class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ['id', 'public_id', 'customer', 'location_name', 'location_address',
-                'description', 'location_latitude', 'location_longitude', 'created_at', 'updates_at']
+                'description', 'location_latitude', 'location_longitude', 'created_at', 'updated_at']
         extra_kwargs = {
             'public_id': {'read_only': True},
             'customer': {'read_only': True},
