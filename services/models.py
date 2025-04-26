@@ -14,6 +14,7 @@ class PaymentMethod(models.TextChoices):
 
 class CustomerServices(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    public_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     service_name = models.CharField(max_length=255)
     service_type = models.CharField(max_length=50, choices=ServiceType.choices)
@@ -38,6 +39,7 @@ class CustomerServices(models.Model):
     
 class PartnerServices(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    public_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     product_name = models.CharField(max_length=255)
     price_per_unit = models.DecimalField(max_digits=5, decimal_places=2)
@@ -56,6 +58,7 @@ class PartnerServices(models.Model):
 
 class OtherServices(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    public_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     type = models.TextField()

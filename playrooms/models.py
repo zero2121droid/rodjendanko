@@ -4,6 +4,7 @@ import uuid
 
 class Customer(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    public_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
     user = models.OneToOneField('users.User', on_delete=models.CASCADE, null=True, blank=True, related_name='customer_profile')
     name = models.CharField(max_length=255)
     address1 = models.TextField(null=True, blank=True)
@@ -24,11 +25,25 @@ class Customer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     description = models.TextField(null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if not self.public_id:
+            last = Customer.objects.order_by('-created_at').first()
+            next_number = 1
+            if last and last.public_id:
+                try:
+                    last_number = int(last.public_id.replace('PRT', ''))
+                    next_number = last_number + 1
+                except:
+                    pass
+            self.public_id = f"PRT{next_number:03d}"
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 
 class Location(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    public_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
     location_name = models.CharField(max_length=255)
     location_address = models.TextField(null=True, blank=True)
@@ -40,8 +55,18 @@ class Location(models.Model):
 
     def __str__(self):
         return self.location_name
+    
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        if not self.public_id:
+            last = Location.objects.order_by('-created_at').first()
+            next_number = 1
+            if last and last.public_id:
+                try:
+                    last_number = int(last.public_id.replace('LOC', ''))
+                    next_number = last_number + 1
+                except:
+                    pass
+            self.public_id = f"LOC{next_number:03d}"
     
     class Meta: # korisno za prilagodjavanje modela, omogucava postavljanje ljudskih imena za modele, redosled sortiranja, indeksa i drugih opcija
         verbose_name = "Location"

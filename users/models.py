@@ -5,7 +5,7 @@ import uuid
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
-    #id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    public_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
     USER_TYPES = [
         ('admin', 'Admin'),
         ('customer', 'Customer'),
@@ -30,7 +30,16 @@ class User(AbstractUser):
     
     
     def save(self, *args, **kwargs):
-        self.full_clean()
+        if not self.public_id:
+            last = User.objects.order_by('-created_at').first()
+            next_number = 1
+            if last and last.public_id:
+                try:
+                    last_number = int(last.public_id.replace('USR', ''))
+                    next_number = last_number + 1
+                except:
+                    pass
+            self.public_id = f"USR{next_number:03d}"
         super().save(*args, **kwargs)
 
 class Children(models.Model):
