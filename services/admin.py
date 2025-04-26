@@ -25,7 +25,7 @@ class OtherServicesAdmin(admin.ModelAdmin):
 
 @admin.register(ServicesImages)
 class ServicesImagesAdmin(admin.ModelAdmin):
-    list_display = ("service_type", "service_id", "service_image_url")
+    list_display = ("service_type", "object_id", "service_image_url")
     list_filter = ("service_type",)
     ordering = ["-created_at"]
 
