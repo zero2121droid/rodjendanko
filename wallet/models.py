@@ -12,8 +12,7 @@ class CoinsWallet(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        owner = self.user or self.customer
-        return f"Wallet for {owner} - {self.coins_balance} coins"
+        return f"Wallet for {self.user.email} - {self.coins_balance} coins"
 
 class CoinsTransaction(models.Model):
     TRANSACTION_TYPE_CHOICES = [
@@ -27,7 +26,7 @@ class CoinsTransaction(models.Model):
     coins_amount = models.IntegerField(default=0)
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE_CHOICES, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    time_stamp = models.DateTimeField()
+    time_stamp = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

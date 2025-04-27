@@ -2,13 +2,14 @@ from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from wallet.models import CoinsWallet, CoinsTransaction
 from api.serializers.s_wallet import WalletSerializer, WalletTransactionSerializer
+from rest_framework.permissions import IsAuthenticated
 # ---------------------------------------------------------------------
 # Wallet ViewSet
 # ---------------------------------------------------------------------
 class WalletViewSet(viewsets.ModelViewSet):
     # queryset = CoinsWallet.objects.all()
     serializer_class = WalletSerializer
-
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["user__email"]
     filterset_fields = ["user"] 
@@ -26,9 +27,9 @@ class WalletViewSet(viewsets.ModelViewSet):
 class WalletTransactionViewSet(viewsets.ModelViewSet):
     queryset = CoinsTransaction.objects.all()
     serializer_class = WalletTransactionSerializer
-
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["transaction_type", "amount", "user__email"]
+    search_fields = ["transaction_type", "coins_amount", "user__email"]
     filterset_fields = ["transaction_type", "user"]  
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]
