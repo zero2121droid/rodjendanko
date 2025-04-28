@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from reservations.models import Bookings
 from api.serializers.s_bookings import BookingsSerializer
 from notifications.utils import create_notification
-from api.utils import add_swagger_tags
+
 
 # ---------------------------------------------------------------------
 # Bookings Permissions
@@ -29,7 +29,6 @@ class IsBookingOwnerOrCustomerOrAdmin(permissions.BasePermission):
 # ---------------------------------------------------------------------
 # Bookings ViewSet
 # ---------------------------------------------------------------------
-@add_swagger_tags(tags=["Bookings"])
 class BookingsViewSet(viewsets.ModelViewSet):
     queryset = Bookings.objects.all()
     serializer_class = BookingsSerializer

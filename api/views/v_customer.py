@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny
 from api.serializers.s_customer_registration import CustomerRegistrationSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from api.utils import add_swagger_tags
+
 
 # ---------------------------------------------------------------------
 # Pristup Customeru samo za Ownera
@@ -18,7 +18,6 @@ class IsOwnerOfCustomer(permissions.BasePermission):
 # ---------------------------------------------------------------------
 # Customer ViewSet
 # ---------------------------------------------------------------------
-@add_swagger_tags(tags=["Customer"])
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     permission_classes = [permissions.IsAuthenticated, IsOwnerOfCustomer]
