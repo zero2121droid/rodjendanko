@@ -3,9 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from api.serializers.s_customer_registration import CustomerRegistrationSerializer
 from rest_framework.permissions import AllowAny
-from api.utils import add_swagger_tags
 
-@add_swagger_tags(tags=["Customer Registration"])
 class CustomerRegistrationView(APIView):
     permission_classes = [AllowAny]
 
