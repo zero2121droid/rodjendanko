@@ -248,3 +248,9 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+SWAGGER_SETTINGS = {
+    'LOGIN_URL': None,
+    'LOGOUT_URL': None,
+    'USE_SESSION_AUTH': False,
+}
