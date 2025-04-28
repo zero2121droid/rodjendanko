@@ -29,7 +29,7 @@ class IsBookingOwnerOrCustomerOrAdmin(permissions.BasePermission):
 # ---------------------------------------------------------------------
 # Bookings ViewSet
 # ---------------------------------------------------------------------
-@add_swagger_tags(tags=["Bookings"])
+#@add_swagger_tags(tags=["Bookings"])
 class BookingsViewSet(viewsets.ModelViewSet):
     queryset = Bookings.objects.all()
     serializer_class = BookingsSerializer
