@@ -16,7 +16,7 @@ from api.views.v_customer_registration import CustomerRegistrationView
 router = DefaultRouter()
 router.register(r'user', UserViewSet, basename='users')
 router.register(r'children', ChildrenViewSet, basename='children')
-#router.register(r'customer', CustomerViewSet, basename='customer')
+router.register(r'customer', CustomerViewSet, basename='customer')
 router.register(r'customer-services', CustomerServicesViewSet, basename='customer-services')
 router.register(r'partner-services', PartnerServicesViewSet, basename='partner-services')
 router.register(r'other-services', OtherServicesViewSet, basename='other-services')
