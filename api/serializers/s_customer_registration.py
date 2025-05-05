@@ -20,7 +20,12 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop("user")
-
+        context = self.context or {}
+        if context.get("terms_accepted_ip"):
+            user_data["terms_accepted_ip"] = context["terms_accepted_ip"]
+        if context.get("terms_accepted_at"):
+            user_data["terms_accepted_at"] = context["terms_accepted_at"]
+            
         # 1. Kreiraj user-a sa svim potrebnim podacima
         user_serializer = UserRegistrationSerializer(data=user_data)
         user_serializer.is_valid(raise_exception=True)

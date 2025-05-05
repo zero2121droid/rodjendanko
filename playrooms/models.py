@@ -19,6 +19,7 @@ class Customer(models.Model):
     owner_lastname = models.CharField(max_length=255, null=True, blank=True)
     owner_email = models.EmailField(unique=True, null=True, blank=True)
     owner_password = models.CharField(max_length=255, null=True, blank=True)
+    is_active = models.BooleanField(default=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     description = models.TextField(null=True, blank=True)
