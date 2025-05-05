@@ -7,15 +7,16 @@ from django.contrib.auth.hashers import make_password
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True, style={"input_type": "password"})  # za potvrdu lozinke
     terms_accepted = serializers.BooleanField(write_only=True)
-    owner_name = serializers.CharField(write_only=True)  # Ovo polje više nije potrebno, jer koristimo username
-    owner_email = serializers.EmailField(write_only=True)  # Ovo polje više nije potrebno, jer koristimo email
-    owner_password = serializers.CharField(write_only=True)  # Ovo polje više nije potrebno, jer koristimo password
+    company_name = serializers.CharField(write_only=True)  # Polje za naziv firme
+    owner_name = serializers.CharField(write_only=True)  # Može biti postavljeno na username korisnika
+    owner_email = serializers.EmailField(write_only=True)  # Može biti postavljeno na email korisnika
+    owner_password = serializers.CharField(write_only=True)  # Može biti postavljeno na password korisnika
 
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'password2', 'address', 'city', 
-                  'phone', 'description', 'terms_accepted', 'user_type', 'company_name', 'owner', 
-                  'owner_name', 'owner_email', 'owner_password']
+                  'phone', 'description', 'terms_accepted', 'user_type', 'owner_name', 
+                  'owner_email', 'owner_password', 'company_name']
         extra_kwargs = {
             'password': {'write_only': True},
             'is_active': {'read_only': True},
