@@ -1,7 +1,14 @@
 # admin.py (playrooms app)
 
 from django.contrib import admin
-from .models import Location, LocationImages, LocationWorkingHours
+from .models import Location, LocationImages, LocationWorkingHours, Customer
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ("name", "address", "city", "phone", "created_at")
+    search_fields = ("name", "address", "city", "phone")
+    list_filter = ("name",)
+    ordering = ["-created_at"]
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
