@@ -42,8 +42,11 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         ip_address = None
         if request:
-            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-            ip_address = x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
+            ip_address = request.META.get('HTTP_X_FORWARDED_FOR')
+            if ip_address:
+                ip_address = ip_address.split(',')[0]
+            else:
+                ip_address = request.META.get('REMOTE_ADDR')
 
         user = User(**validated_data)
         user.set_password(password)

@@ -38,7 +38,7 @@ class UserViewSet(viewsets.ModelViewSet):
         """
         Endpoint za registraciju novog korisnika
         """
-        serializer = UserRegistrationSerializer(data=request.data)
+        serializer = UserRegistrationSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             user = serializer.save()
             return Response(
