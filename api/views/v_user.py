@@ -90,7 +90,7 @@ class ChildrenViewSet(viewsets.ModelViewSet):
     serializer_class = ChildrenSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["name"]
-    filterset_fields = ["username"]
+    filterset_fields = ["user"]
 
     def get_queryset(self):
         user = self.request.user
