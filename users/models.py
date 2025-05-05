@@ -18,9 +18,14 @@ class User(AbstractUser):
     city = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
     user_type = models.CharField(max_length=20, choices=USER_TYPES, null=True, blank=True)
+    owner = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    terms_accepted = models.BooleanField(default=False)
+    terms_accepted_at = models.DateTimeField(null=True, blank=True)
+    terms_accepted_ip = models.GenericIPAddressField(null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
