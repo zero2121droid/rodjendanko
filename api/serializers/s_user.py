@@ -16,7 +16,7 @@ class ChildrenSerializer(serializers.ModelSerializer):
 # Users Serializer
 # ---------------------------------------------------------------------
 class UserSerializer(serializers.ModelSerializer):
-    children = ChildrenSerializer(many=True, read_only=True, source='children_set')
+    children = ChildrenSerializer(many=True, read_only=True)
     bookings = BookingsSerializer(many=True, read_only=True, source='bookings_set')
     password = serializers.CharField(write_only=True)
 

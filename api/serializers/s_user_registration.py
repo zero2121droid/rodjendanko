@@ -1,6 +1,6 @@
 from django.utils import timezone
 from rest_framework import serializers
-from users.models import User
+from users.models import Children, User
 from playrooms.models import Customer
 from django.contrib.auth.hashers import make_password
 
@@ -38,6 +38,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password')
         user_type = validated_data.get('user_type')
         company_name = validated_data.pop('company_name', None)
+        children_data = validated_data.pop('children', [])
 
         request = self.context.get('request')
         ip_address = None
@@ -69,5 +70,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
                 owner_email=user.email,
                 owner_password=make_password(password),
             )
+        for child_data in children_data:
+            Children.objects.create(user=user, **child_data)
 
         return user
