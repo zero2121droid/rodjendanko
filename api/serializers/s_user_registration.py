@@ -48,6 +48,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user = User(**validated_data)
         user.set_password(password)
         user.user_type = validated_data.get('user_type', 'user')
+        user.owner = validated_data.get('owner', False)
         user.terms_accepted = terms_accepted
         user.terms_accepted_at = timezone.now()
         user.terms_accepted_ip = ip_address
