@@ -1,5 +1,6 @@
 from django.utils import timezone
 from rest_framework import serializers
+from api.serializers.s_user import ChildrenSerializer
 from users.models import Children, User
 from playrooms.models import Customer
 from django.contrib.auth.hashers import make_password
@@ -8,6 +9,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True, style={"input_type": "password"})
     terms_accepted = serializers.BooleanField(write_only=True)
     company_name = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    children = ChildrenSerializer(many=True, required=False)
 
     class Meta:
         model = User
