@@ -24,13 +24,14 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'public_id', 'username', 'first_name', 'last_name','address', 'city', 'phone', 'email',
-            'password', 'coins_wallet', 'bookings','description', 'created_at', 'updated_at', 'children', 'owner'
+            'password', 'coins_wallet', 'bookings','description', 'created_at', 'updated_at', 'children', 'owner', 'is_active', 'user_type'
         ]
         extra_kwargs = {
             'password': {'write_only': True},
             'coins_wallet': {'read_only': True},
             'created_at': {'read_only': True},
             'updated_at': {'read_only': True},
+            'is_active': {'read_only': True},
         }
 
     def create(self, validated_data):
