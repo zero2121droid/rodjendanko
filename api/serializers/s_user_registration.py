@@ -10,9 +10,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username','email', 'password', 'password2', 'address', 'city', 'phone', 'description', 'terms_accepted', 'user_type', 'company_name']
+        fields = ['username','email', 'password', 'password2', 'address', 'city', 'phone', 'description', 'terms_accepted', 'user_type', 'company_name', 'owner']
         extra_kwargs = {
-            'password': {'write_only': True}
+            'password': {'write_only': True},
+            'is_active': {'read_only': True},
         }
 
     def validate_email(self, value):
