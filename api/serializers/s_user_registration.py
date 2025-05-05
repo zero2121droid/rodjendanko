@@ -5,18 +5,14 @@ from playrooms.models import Customer
 from django.contrib.auth.hashers import make_password
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    password2 = serializers.CharField(write_only=True, style={"input_type": "password"})  # za potvrdu lozinke
+    password2 = serializers.CharField(write_only=True, style={"input_type": "password"})
     terms_accepted = serializers.BooleanField(write_only=True)
-    company_name = serializers.CharField(write_only=True)  # Polje za naziv firme
-    owner_name = serializers.CharField(write_only=True)  # Može biti postavljeno na username korisnika
-    owner_email = serializers.EmailField(write_only=True)  # Može biti postavljeno na email korisnika
-    owner_password = serializers.CharField(write_only=True)  # Može biti postavljeno na password korisnika
+    company_name = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'password2', 'address', 'city', 
-                  'phone', 'description', 'terms_accepted', 'user_type', 'owner_name', 
-                  'owner_email', 'owner_password', 'company_name']
+                  'phone', 'description', 'terms_accepted', 'user_type', 'company_name']
         extra_kwargs = {
             'password': {'write_only': True},
             'is_active': {'read_only': True},
@@ -37,38 +33,37 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        validated_data.pop('password2')  # Uklanjamo potvrdu lozinke
+        validated_data.pop('password2')
         terms_accepted = validated_data.pop('terms_accepted')
         password = validated_data.pop('password')
         user_type = validated_data.get('user_type')
+        company_name = validated_data.pop('company_name', None)
 
-        request = self.context.get('request')  # Dohvati request iz konteksta
+        request = self.context.get('request')
         ip_address = None
         if request:
             x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
             ip_address = x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
 
         user = User(**validated_data)
-        user.set_password(password)  # Hash-uj lozinku
-        user.user_type = 'user' 
+        user.set_password(password)
+        user.user_type = 'user'  # default
         user.terms_accepted = terms_accepted
         user.terms_accepted_at = timezone.now()
         user.terms_accepted_ip = ip_address
         user.save()
 
         if user_type == 'partner':
-            company_name = validated_data.get('company_name')
-
-            # Kreiranje Customer objekta za partnera
             Customer.objects.create(
                 user=user,
-                name=company_name,  # Kompanija je kreirana sa imenom iz `company_name`
-                address=validated_data['address'],
-                city=validated_data['city'],
-                phone=validated_data['phone'],
-                description=validated_data.get('description', ''),
-                owner_name=user.username,  # Vlasnik koristi username kao owner_name
-                owner_email=user.email,    # Vlasnik koristi email kao owner_email
-                owner_password=make_password(password),  # Lozinka vlasnika hešovana
+                name=company_name,
+                address=user.address,
+                city=user.city,
+                phone=user.phone,
+                description=user.description,
+                owner_name=user.username,
+                owner_email=user.email,
+                owner_password=make_password(password),
             )
+
         return user
