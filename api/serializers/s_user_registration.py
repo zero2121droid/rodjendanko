@@ -7,7 +7,7 @@ from django.contrib.auth.hashers import make_password
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True, style={"input_type": "password"})
     terms_accepted = serializers.BooleanField(write_only=True)
-    company_name = serializers.CharField(write_only=True)
+    company_name = serializers.CharField(write_only=True, required=False, allow_blank=True)
 
     class Meta:
         model = User
