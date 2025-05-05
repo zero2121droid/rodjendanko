@@ -17,7 +17,6 @@ class User(AbstractUser):
     address = models.TextField(null=True, blank=True)
     city = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
-    company_name = models.CharField(max_length=255, null=True, blank=True)
     user_type = models.CharField(max_length=20, choices=USER_TYPES, null=True, blank=True)
     owner = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
