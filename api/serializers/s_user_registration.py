@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 from rest_framework import serializers
 from users.models import User
 from playrooms.models import Customer
