@@ -19,6 +19,7 @@ services:
       - DATABASE_PASSWORD=njeXe3f0JiosaHpYvkMtAv2M
       - DATABASE_HOST=db_rodjendanko
       - DATABASE_PORT=5432
+      - TZ=Europe/Belgrade
   db_rodjendanko:
     image: postgres:13
     container_name: rodjendanko_postgres_db
@@ -28,6 +29,7 @@ services:
       - POSTGRES_DB=rodjendanko_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=njeXe3f0JiosaHpYvkMtAv2M
+      - TZ=Europe/Belgrade
     ports:
       - "5433:5432"
 
