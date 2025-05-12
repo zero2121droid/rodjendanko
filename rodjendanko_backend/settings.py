@@ -213,8 +213,8 @@ CORS_ALLOW_CREDENTIALS = True
 ENCRYPTION_KEY = "8PusTxeVS2PXyyS3DNQosWUeP-75Gfvbpdq1cOS0Hjw="
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),  # Token expires in 30 minutes
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Refresh token lasts for 7 days
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),  # Token expires in 60 minutes
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Refresh token lasts for 1 day
     "ROTATE_REFRESH_TOKENS": True,  # Issue a new refresh token each time
     "BLACKLIST_AFTER_ROTATION": True,  # Blacklist old refresh tokens
     "AUTH_HEADER_TYPES": ("Bearer",),

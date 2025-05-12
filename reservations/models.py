@@ -13,7 +13,7 @@ class Bookings(models.Model):
     customer = models.ForeignKey('playrooms.Customer', on_delete=models.CASCADE)
     customer_services = models.ForeignKey('services.CustomerServices', on_delete=models.CASCADE)
     location = models.ForeignKey('playrooms.Location', on_delete=models.CASCADE)
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='bookings_set')
     status = models.CharField(max_length=20, choices=BookingStatus.choices, default=BookingStatus.NA_CEKANJU)
     booking_date = models.DateTimeField(auto_now_add=True)
     booking_validation_date = models.DateTimeField(null=True, blank=True)
@@ -36,4 +36,4 @@ class Bookings(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Booking {self.public_idid} - {self.customer} - {self.location} - {self.booking_date} - {self.status}"
+        return f"Booking {self.public_id} - {self.customer} - {self.location} - {self.booking_date} - {self.status}"

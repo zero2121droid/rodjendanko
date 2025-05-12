@@ -50,8 +50,8 @@ Pretraga:
 
 Kada u frontendu Owner kreira lokaciju dovoljno je u request proslediti sledece:
 Owner uopšte ne mora ni da zna koji mu je customer_id.
-✅ Na backendu sve automatski povezujemo.
-✅ Frontend šalje samo:
+Na backendu sve automatski povezujemo.
+Frontend šalje samo:
     {
         "location_name": "Igraonica Sveznalica",
         "location_address": "Ulica Petra Petrovića 12, Beograd",
@@ -59,3 +59,53 @@ Owner uopšte ne mora ni da zna koji mu je customer_id.
         "location_latitude": 44.7866,
         "location_longitude": 20.4489
     }
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Tekst za uslove koriscenja:
+
+USLOVI KORIŠĆENJA
+Datum poslednjeg azuriranja: April 28, 2025.
+Dobrodošli na Rodjendanko.rs! Korišćenjem ove platforme pristajete na sledeće uslove korišćenja. Ako se ne slažete sa bilo kojim delom ovih uslova, nemojte koristiti ovaj sajt.
+1. Opis usluge
+Rodjendanko je platforma koja omogućava korisnicima da rezervišu termine za proslave rođendana u igraonicama i da naruče dodatne usluge kao što su torte, dekoracije, animator i drugo.
+2. Registracija korisnika
+Da biste koristili platformu, morate se registrovati i uneti tačne informacije. Odgovorni ste za čuvanje poverljivosti svoje lozinke.
+3. Obaveze korisnika
+Korisnik se obavezuje da:
+•	koristi platformu u skladu sa zakonima Republike Srbije;
+•	neće zloupotrebljavati sistem za lažne rezervacije;
+•	pruža tačne informacije o sebi i detetu.
+4. Otkazivanje rezervacija
+Otkazivanje rezervacija moguće je u skladu s pravilima igraonice. Rodjendanko ne garantuje povraćaj novca ukoliko rezervacija nije otkazana u roku predviđenom pravilima partnera.
+5. Prava i odgovornosti
+Rodjendanko zadržava pravo da izmeni ove uslove u bilo kom trenutku. Korisnici će biti obavešteni o izmenama putem sajta.
+6. Odricanje od odgovornosti
+Rodjendanko ne snosi odgovornost za eventualne nesuglasice između korisnika i igraonice ili za kvalitet dodatnih usluga.
+ 
+POLITIKA PRIVATNOSTI
+Datum poslednjeg azuriranja: April 28, 2025.
+1. Koje podatke prikupljamo?
+•	Ime i prezime korisnika
+•	Email adresu
+•	Broj telefona
+•	Informacije o detetu (ime, datum rođenja)
+•	Detalji o rezervacijama
+2. Kako koristimo podatke?
+Podaci se koriste isključivo za:
+•	Omogućavanje rezervacija
+•	Slanje obaveštenja i potvrda
+•	Unapređenje usluge
+3. Deljenje podataka
+Podaci se dele samo sa igraonicama i partnerima uključenim u realizaciju rezervacija. Nikada ne prodajemo lične podatke trećim licima.
+4. Vaša prava
+Korisnici imaju pravo da:
+•	zahtevaju pristup, ispravku ili brisanje svojih podataka;
+•	se usprotive obradi podataka u marketinške svrhe;
+•	podnesu žalbu Povereniku za informacije od javnog značaja i zaštitu podataka o ličnosti.
+5. Bezbednost
+Podaci se čuvaju na sigurnim serverima i dostupni su samo ovlašćenim licima.
+6. Kolačići
+Koristimo kolačiće kako bismo poboljšali korisničko iskustvo. Korisnici mogu upravljati kolačićima u svom pregledaču.
+Za više informacija, kontaktirajte nas na: admin@rodjendarijum.lenitech.org
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

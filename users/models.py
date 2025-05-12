@@ -8,7 +8,7 @@ class User(AbstractUser):
     public_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
     USER_TYPES = [
         ('admin', 'Admin'),
-        ('customer', 'Customer'),
+        #('customer', 'Customer'),
         ('partner', 'Partner'),
         ('user', 'Regular User'),
     ]
@@ -33,7 +33,8 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.username} ({self.email})"
     
-    
+    # Funkcija za kreiranje jedinstvenog public_id za korisnika. Koristi se prilikom kreiranja novog korisnika. Mora da bude smestena u modelu User jer se koristi prilikom kreiranja svakog korisnika, Kada bi se definisala u serializeru onda bi se 
+    # pozivala samo prilikom pozivanja tog serializera tj endpointa, a potrebno je da se poziva prilikom kreiranja svakog korisnika
     def save(self, *args, **kwargs):
         if not self.public_id:
             last = User.objects.order_by('-created_at').first()
