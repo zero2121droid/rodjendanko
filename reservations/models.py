@@ -21,7 +21,7 @@ class Bookings(models.Model):
     booking_duration = models.IntegerField(null=True, blank=True)
     booking_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     booking_validation_date = models.DateTimeField(null=True, blank=True)
-    booking_type = models.CharField(max_length=20)
+    booking_type = models.CharField(max_length=20, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
