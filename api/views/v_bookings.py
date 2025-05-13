@@ -36,7 +36,7 @@ class IsBookingOwnerOrCustomerOrAdmin(permissions.BasePermission):
 class BookingsViewSet(viewsets.ModelViewSet):
     queryset = Bookings.objects.all()
     serializer_class = BookingsSerializer
-    permission_classes = [permissions.IsAuthenticated, IsBookingOwnerOrCustomerOrAdmin]
+    #permission_classes = [permissions.IsAuthenticated, IsBookingOwnerOrCustomerOrAdmin]
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["customer__name", "location__location_name", "customer_services__service_name", "booking_date"]
