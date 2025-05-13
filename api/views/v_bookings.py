@@ -3,6 +3,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from reservations.models import Bookings
 from api.serializers.s_bookings import BookingsSerializer
 from notifications.utils import create_notification
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+
 
 
 # ---------------------------------------------------------------------
@@ -56,3 +61,16 @@ class BookingsViewSet(viewsets.ModelViewSet):
             message=f"Vaša rezervacija za {booking.location.location_name} je uspešno kreirana.",
         )
 # ---------------------------------------------------------------------
+# Booking Counter
+# ---------------------------------------------------------------------
+    class BookingsViewSet(viewsets.ModelViewSet):
+        queryset = Bookings.objects.all()
+        serializer_class = BookingsSerializer
+        permission_classes = [IsAuthenticated]
+
+        @action(detail=False, methods=['get'], url_path='user-booking-count')
+        def user_booking_count(self, request):
+            user = request.user
+            now = timezone.now()
+            count = Bookings.objects.filter(user=user, booking_start_time__gte=now).count()
+            return Response({'count': count})
