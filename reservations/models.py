@@ -2,10 +2,10 @@ from django.db import models
 import uuid
 
 class BookingStatus(models.TextChoices):
-    NA_CEKANJU = 'Na čekanju'
-    PRIHVACEN = 'Prihvacen'
-    ODBIJEN = 'Odbijen'
-    OTKAZAN = 'Otkazan'
+    NA_CEKANJU = 'NA_CEKANJU', 'Na čekanju'
+    PRIHVACEN = 'PRIHVACEN', 'Prihvacen'
+    ODBIJEN = 'ODBIJEN', 'Odbijen'
+    OTKAZAN = 'OTKAZAN', 'Otkazan'
 
 class Bookings(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
