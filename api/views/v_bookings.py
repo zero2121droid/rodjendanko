@@ -7,8 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
-
-
+from reservations.filters import BookingFilter
 
 # ---------------------------------------------------------------------
 # Bookings Permissions
@@ -41,7 +40,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["customer__name", "location__location_name", "customer_services__service_name", "booking_date"]
-    filterset_fields = ["customer", "location", "booking_date", "status"]  # primer za precizno filtriranje
+    filterset_class = BookingFilter
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
 
