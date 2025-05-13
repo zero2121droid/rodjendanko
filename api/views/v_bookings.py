@@ -59,17 +59,10 @@ class BookingsViewSet(viewsets.ModelViewSet):
             title="Uspešna rezervacija",
             message=f"Vaša rezervacija za {booking.location.location_name} je uspešno kreirana.",
         )
-# ---------------------------------------------------------------------
-# Booking Counter
-# ---------------------------------------------------------------------
-    class BookingsViewSet(viewsets.ModelViewSet):
-        queryset = Bookings.objects.all()
-        serializer_class = BookingsSerializer
-        permission_classes = [IsAuthenticated]
 
-        @action(detail=False, methods=['get'], url_path='user-booking-count')
-        def user_booking_count(self, request):
-            user = request.user
-            now = timezone.now()
-            count = Bookings.objects.filter(user=user, booking_start_time__gte=now).count()
-            return Response({'count': count})
+    @action(detail=False, methods=['get'], url_path='user-booking-count')
+    def user_booking_count(self, request):
+        user = request.user
+        now = timezone.now()
+        count = Bookings.objects.filter(user=user, booking_start_time__gte=now).count()
+        return Response({'count': count})
