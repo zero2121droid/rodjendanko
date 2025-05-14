@@ -18,8 +18,8 @@ class BookingsSerializer(serializers.ModelSerializer):
             'customer_services', 'service_name',
             'location', 'location_public_id', 'location_name',
             'user', 'user_public_id', 'status',
-            'booking_date', 'booking_validation_date',
-            'booking_type', 'description',
+            'booking_date', 'booking_start_time','booking_validation_date',
+            'booking_end_time','booking_type', 'children_count', 'description',
             'created_at', 'updated_at',
         ]
         read_only_fields = ('id', 'public_id', 'created_at', 'updated_at', 'booking_date', 'booking_validation_date')
