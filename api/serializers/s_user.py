@@ -27,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
             'password', 'coins_wallet', 'bookings','description', 'created_at', 'updated_at', 'children', 'owner', 'is_active', 'user_type'
         ]
         extra_kwargs = {
-            'password': {'write_only': True},
+            'password': {'write_only': True, 'required': False},
             'coins_wallet': {'read_only': True},
             'created_at': {'read_only': True},
             'updated_at': {'read_only': True},
@@ -42,8 +42,9 @@ class UserSerializer(serializers.ModelSerializer):
         return user
     
     def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Email adresa vec postoji.")
+        user_id = self.instance.id if self.instance else None
+        if User.objects.exclude(id=user_id).filter(email=value).exists():
+            raise serializers.ValidationError("Email adresa već postoji.")
         return value
     
     def update(self, instance, validated_data):
