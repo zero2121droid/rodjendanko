@@ -15,6 +15,7 @@ class Bookings(models.Model):
     location = models.ForeignKey('playrooms.Location', on_delete=models.CASCADE)
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='bookings_set')
     status = models.CharField(max_length=20, choices=BookingStatus.choices, default=BookingStatus.NA_CEKANJU)
+    children_count = models.IntegerField(null=True, blank=True)
     booking_date = models.DateTimeField(null=True, blank=True)
     booking_start_time = models.DateTimeField(null=True, blank=True)
     booking_end_time = models.DateTimeField(null=True, blank=True)
