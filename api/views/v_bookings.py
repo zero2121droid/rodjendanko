@@ -40,7 +40,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["customer__name", "location__location_name", "customer_services__service_name", "booking_date"]
-    filterset_class = BookingFilter
+    #filterset_class = BookingFilter
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
 
