@@ -4,7 +4,8 @@ from services.models import CustomerServices, PartnerServices, OtherServices, Se
 class CustomerServicesSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerServices
-        fields = ('id', 'customer', 'service_name', 'description', 'price_per_child', 'created_at', 'updated_at')
+        fields = '__all__'
+        #fields = ('id', 'customer', 'service_name', 'description', 'price_per_child', 'created_at', 'updated_at')
         read_only_fields = ('id', 'created_at', 'updated_at')
 
 class PartnerServicesSerializer(serializers.ModelSerializer):
