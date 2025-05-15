@@ -10,6 +10,7 @@ class BookingsSerializer(serializers.ModelSerializer):
     user_public_id = serializers.CharField(source='user.public_id', read_only=True)
     location_name = serializers.CharField(source='location.location_name', read_only=True)
     service_name = serializers.CharField(source='customer_services.service_name', read_only=True)
+    duration = serializers.CharField(source='customer_services.duration', read_only=True)
 
     class Meta:
         model = Bookings
