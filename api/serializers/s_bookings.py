@@ -18,7 +18,7 @@ class BookingsSerializer(serializers.ModelSerializer):
             'id', 'public_id', 'customer', 'customer_public_id',
             'customer_services', 'service_name',
             'location', 'location_public_id', 'location_name',
-            'user', 'user_public_id', 'status',
+            'user', 'user_public_id', 'status', 'duration',
             'booking_date', 'booking_start_time','booking_validation_date',
             'booking_end_time','booking_type', 'children_count', 'description',
             'created_at', 'updated_at',
