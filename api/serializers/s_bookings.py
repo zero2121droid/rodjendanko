@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from reservations.models import Bookings
+from users.models import Children
 
 # ---------------------------------------------------------------------
 # Bookings Serializer
@@ -12,6 +13,9 @@ class BookingsSerializer(serializers.ModelSerializer):
     service_name = serializers.CharField(source='customer_services.service_name', read_only=True)
     duration = serializers.CharField(source='customer_services.duration', read_only=True)
     price = serializers.CharField(source='customer_services.price_per_child', read_only=True)
+    child = serializers.CharField(source='children.name', read_only=True)
+    child_bday = serializers.CharField(source='children.years', read_only=True)
+
 
     class Meta:
         model = Bookings
@@ -21,7 +25,7 @@ class BookingsSerializer(serializers.ModelSerializer):
             'location', 'location_public_id', 'location_name',
             'user', 'user_public_id', 'status', 'duration',
             'booking_date', 'booking_start_time','booking_validation_date',
-            'booking_end_time','booking_type', 'children_count', 'price', 'description',
+            'booking_end_time','booking_type', 'children_count', 'price', 'child', 'child_bday', 'description',
             'created_at', 'updated_at',
         ]
         read_only_fields = ('id', 'public_id', 'created_at', 'updated_at', 'booking_date', 'booking_validation_date')
