@@ -11,6 +11,7 @@ class ChildrenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Children
         fields = '__all__'
+        read_only_fields = ['years', 'created_at', 'updated_at']
 
 # ---------------------------------------------------------------------
 # Users Serializer

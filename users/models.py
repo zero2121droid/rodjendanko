@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 import uuid
 from django.contrib.auth.models import AbstractUser
+from datetime import date
 
 class User(AbstractUser):
     public_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
@@ -53,6 +54,8 @@ class Children(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     name = models.CharField(max_length=255)
     birth_date = models.DateField(null=True, blank=True)
+    years = models.IntegerField(null=True, blank=True)
+    allergies = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -60,6 +63,11 @@ class Children(models.Model):
         return f"{self.name} ({self.birth_date})" if self.name else "Unnamed child"
     
     def save(self, *args, **kwargs):
+        if self.birth_date:
+            today = date.today()
+            self.years = today.year - self.birth_date.year - (
+                (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
+            )
         self.updated_at = timezone.now()
         super().save(*args, **kwargs)
 
