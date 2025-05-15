@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from decimal import Decimal
 
 class BookingStatus(models.TextChoices):
     NA_CEKANJU = 'NA_CEKANJU', 'Na čekanju'
@@ -38,6 +39,9 @@ class Bookings(models.Model):
                 except:
                     pass
             self.public_id = f"BKG{next_number:03d}"
+            # Izračunaj booking_price ako su dostupni potrebni podaci
+            if self.children_count is not None and self.customer_service and self.customer_service.price_per_child is not None:
+                self.booking_price = Decimal(self.children_count) * self.customer_service.price_per_child
         super().save(*args, **kwargs)
 
     def __str__(self):
