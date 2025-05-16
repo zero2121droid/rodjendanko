@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'public_id', 'username', 'first_name', 'last_name','address', 'city', 'phone', 'email',
-            'password', 'coins_wallet', 'bookings','description', 'created_at', 'updated_at', 'children', 'owner', 'is_active', 'user_type'
+            'password', 'coins_wallet', 'bookings','description', 'created_at', 'updated_at', 'children', 'owner', 'is_active', 'user_type', 'customer_id'
         ]
         extra_kwargs = {
             'password': {'write_only': True, 'required': False},
@@ -56,6 +56,11 @@ class UserSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
         return instance
+    
+    def get_customer_id(self, obj):
+        if obj.user_type == 'partner' and hasattr(obj, 'customer'):
+            return obj.customer.id
+        return None
     
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod

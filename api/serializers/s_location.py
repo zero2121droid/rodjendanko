@@ -4,8 +4,7 @@ from playrooms.models import Location, LocationImages, LocationWorkingHours
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = ['id', 'public_id', 'customer', 'location_name', 'location_address',
-                'description', 'location_latitude', 'location_longitude', 'created_at', 'updated_at']
+        fields = "__all__"
         extra_kwargs = {
             'public_id': {'read_only': True},
             'customer': {'read_only': True},
@@ -18,18 +17,11 @@ class LocationSerializer(serializers.ModelSerializer):
 class LocationImagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocationImages
-        fields = [
-            'id', 'location', 'location_image_url', 'upload_date', 
-            'created_at', 'updated_at', 'description'
-        ]
+        fields = "__all__"
         read_only_fields = ['id', 'upload_date', 'created_at', 'updated_at']
 
 class LocationWorkingHoursSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocationWorkingHours
-        fields = [
-            'id', 'location', 'day_of_week', 'location_opening_time', 
-            'location_closing_time', 'location_brake_duration', 
-            'created_at', 'updated_at'
-        ]
+        fields = "__all__"
         read_only_fields = ['id', 'created_at', 'updated_at']
