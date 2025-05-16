@@ -46,7 +46,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser:
+        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return Bookings.objects.all()
         if hasattr(user, 'customer_profile'):
             return Bookings.objects.filter(customer=user.customer_profile)

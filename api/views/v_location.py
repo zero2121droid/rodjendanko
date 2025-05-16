@@ -17,7 +17,7 @@ class LocationViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff:
+        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return Location.objects.all()
         return Location.objects.filter(customer__user=user)  # filtriraj po korisniku koji je vlasnik lokacije
     
@@ -50,7 +50,7 @@ class LocationImagesViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff:
+        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return LocationImages.objects.all()
         return LocationImages.objects.filter(location__customer__user=user) 
     
@@ -80,7 +80,7 @@ class LocationWorkingHoursViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff:
+        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return LocationWorkingHours.objects.all()
         return LocationWorkingHours.objects.filter(location__customer__user=user)
 

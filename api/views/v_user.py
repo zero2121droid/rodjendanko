@@ -26,7 +26,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser:
+        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return User.objects.all()
         elif user.is_staff:
             return User.objects.filter(is_staff=False)
@@ -94,7 +94,7 @@ class ChildrenViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff:
+        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return Children.objects.all()
         return Children.objects.filter(user=user)
     

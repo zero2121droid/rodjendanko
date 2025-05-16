@@ -17,7 +17,7 @@ class CustomerServicesViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff:
+        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return CustomerServices.objects.all()
         return CustomerServices.objects.filter(location__customer__user=user)
 # ---------------------------------------------------------------------
@@ -33,7 +33,7 @@ class PartnerServicesViewSet(viewsets.ModelViewSet):
     ordering = ["created_at"]  # defaultno sortiranje po created_at
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff:
+        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return PartnerServices.objects.all()
         return PartnerServices.objects.filter(customer__user=user)
 # ---------------------------------------------------------------------
@@ -65,7 +65,7 @@ class ServicesImagesViewSet(viewsets.ModelViewSet):
     ordering = ["upload_date"]  # defaultno sortiranje po upload_date
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff:
+        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return ServicesImages.objects.all()
         return ServicesImages.objects.none()
 # ---------------------------------------------------------------------

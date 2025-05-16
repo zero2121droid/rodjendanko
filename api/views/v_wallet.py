@@ -18,7 +18,7 @@ class WalletViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff:
+        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return CoinsWallet.objects.all()
         return CoinsWallet.objects.filter(user=user)
 # ---------------------------------------------------------------------
@@ -36,7 +36,7 @@ class WalletTransactionViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff:
+        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return CoinsTransaction.objects.all()
         return CoinsTransaction.objects.filter(user=user)
 # ---------------------------------------------------------------------

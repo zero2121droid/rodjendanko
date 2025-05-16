@@ -30,6 +30,6 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser:
+        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return Customer.objects.all()
         return Customer.objects.filter(user=user)
