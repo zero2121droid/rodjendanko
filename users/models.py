@@ -38,7 +38,7 @@ class User(AbstractUser):
     # pozivala samo prilikom pozivanja tog serializera tj endpointa, a potrebno je da se poziva prilikom kreiranja svakog korisnika
     def save(self, *args, **kwargs):
         if not self.public_id:
-            last = User.objects.order_by('-created_at').first()
+            last = User.objects.exclude(public_id__isnull=True).exclude(public_id='').order_by('-created_at').first()
             next_number = 1
             if last and last.public_id:
                 try:
