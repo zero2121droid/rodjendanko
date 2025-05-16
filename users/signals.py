@@ -7,6 +7,14 @@ from wallet.models import CoinsWallet
 from django.contrib.auth import get_user_model
 from notifications.utils import create_notification
 import logging
+from django.contrib.auth.models import Group
+# ---------------------------------------------------------------------
+# Signals
+# ---------------------------------------------------------------------
+# Ovi signali se koriste za automatsko kreiranje novčanika i notifikacija
+# prilikom registracije korisnika i kreiranja igraonice (Customer).
+# Takođe, dodaju korisnika u grupu AdminGroup ako je admin.
+# ---------------------------------------------------------------------
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -22,6 +30,12 @@ def create_wallet_for_user(sender, instance, created, **kwargs):
             message="Uspešno ste se registrovali na Rodjendarijum.",
         )
     logger.info(f"[User Notif] Poslata notifikacija dobrodošlice korisniku {instance.username}")
+
+    # ➤ Ako je user_type admin, dodaj ga u grupu
+    if instance.user_type == 'admin':
+        admin_group, _ = Group.objects.get_or_create(name='AdminGroup')
+        instance.groups.add(admin_group)
+        logger.info(f"[User Group] Korisnik {instance.username} dodat u grupu AdminGroup")
 
 @receiver(post_save, sender=Customer)
 def create_notification_for_customer(sender, instance, created, **kwargs):
