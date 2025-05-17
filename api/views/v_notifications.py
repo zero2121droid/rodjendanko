@@ -14,7 +14,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
     filterset_fields = ['is_read']
 
     def get_queryset(self):
-        return Notification.objects.filter(recipient=self.request.user)
+        return Notification.objects.filter(recipient=self.request.user).order_by("created_at")
 
     def perform_create(self, serializer):
         serializer.save(recipient=self.request.user)

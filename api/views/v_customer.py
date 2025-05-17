@@ -31,5 +31,5 @@ class CustomerViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
-            return Customer.objects.all()
-        return Customer.objects.filter(user=user)
+            return Customer.objects.all().order_by("created_at")
+        return Customer.objects.filter(user=user).order_by("created_at")

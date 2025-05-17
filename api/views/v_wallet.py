@@ -19,8 +19,8 @@ class WalletViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
-            return CoinsWallet.objects.all()
-        return CoinsWallet.objects.filter(user=user)
+            return CoinsWallet.objects.all().order_by("created_at")
+        return CoinsWallet.objects.filter(user=user).order_by("created_at")
 # ---------------------------------------------------------------------
 # Wallet Transaction ViewSet
 # ---------------------------------------------------------------------
@@ -37,8 +37,8 @@ class WalletTransactionViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
-            return CoinsTransaction.objects.all()
-        return CoinsTransaction.objects.filter(user=user)
+            return CoinsTransaction.objects.all().order_by("created_at")
+        return CoinsTransaction.objects.filter(user=user).order_by("created_at")
 # ---------------------------------------------------------------------
 # End of file
 # ---------------------------------------------------------------------

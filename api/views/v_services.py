@@ -20,8 +20,8 @@ class CustomerServicesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
-            return CustomerServices.objects.all()
-        return CustomerServices.objects.filter(location__customer__user=user)
+            return CustomerServices.objects.all().order_by("created_at")
+        return CustomerServices.objects.filter(location__customer__user=user).order_by("created_at")
 # ---------------------------------------------------------------------
 # Partner Services ViewSet
 # ---------------------------------------------------------------------
@@ -36,8 +36,8 @@ class PartnerServicesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
-            return PartnerServices.objects.all()
-        return PartnerServices.objects.filter(customer__user=user)
+            return PartnerServices.objects.all().order_by("created_at")
+        return PartnerServices.objects.filter(customer__user=user).order_by("created_at")
 # ---------------------------------------------------------------------
 # Other Services ViewSet
 # ---------------------------------------------------------------------
@@ -52,8 +52,8 @@ class OtherServicesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
-            return OtherServices.objects.all()
-        return OtherServices.objects.filter(customer__user=user)
+            return OtherServices.objects.all().order_by("created_at")
+        return OtherServices.objects.filter(customer__user=user).order_by("created_at")
 # ---------------------------------------------------------------------
 # Services Images ViewSet
 # ---------------------------------------------------------------------
@@ -68,6 +68,6 @@ class ServicesImagesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
-            return ServicesImages.objects.all()
-        return ServicesImages.objects.none()
+            return ServicesImages.objects.all().order_by("created_at")
+        return ServicesImages.objects.none().order_by("created_at")
 # ---------------------------------------------------------------------

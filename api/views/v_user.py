@@ -28,11 +28,11 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
-            return User.objects.all()
+            return User.objects.all().order_by("created_at")
         elif user.is_staff:
-            return User.objects.filter(is_staff=False)
+            return User.objects.filter(is_staff=False).order_by("created_at")
         else:
-            return User.objects.filter(id=user.id)
+            return User.objects.filter(id=user.id).order_by("created_at")
     
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def register(self, request):
@@ -97,7 +97,7 @@ class ChildrenViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
-            return Children.objects.all()
-        return Children.objects.filter(user=user)
+            return Children.objects.all().order_by("created_at")
+        return Children.objects.filter(user=user).order_by("created_at")
     
   

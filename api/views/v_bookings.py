@@ -47,10 +47,10 @@ class BookingsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
-            return Bookings.objects.all()
+            return Bookings.objects.all().order_by("created_at")
         if hasattr(user, 'customer_profile'):
-            return Bookings.objects.filter(customer=user.customer_profile)
-        return Bookings.objects.filter(user=user)
+            return Bookings.objects.filter(customer=user.customer_profile).order_by("created_at")
+        return Bookings.objects.filter(user=user).order_by("created_at")
 
     def perform_create(self, serializer):
         booking = serializer.save(user=self.request.user)

@@ -83,8 +83,8 @@ class LocationWorkingHoursViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
-            return LocationWorkingHours.objects.all()
-        return LocationWorkingHours.objects.filter(location__customer__user=user)
+            return LocationWorkingHours.objects.all().order_by("created_at")
+        return LocationWorkingHours.objects.filter(location__customer__user=user).order_by("created_at")
 
     def perform_create(self, serializer):
         user = self.request.user
