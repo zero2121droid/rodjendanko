@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from reservations.models import Bookings
 from users.models import Children
+from datetime import date
 
 # ---------------------------------------------------------------------
 # Bookings Serializer
@@ -14,7 +15,7 @@ class BookingsSerializer(serializers.ModelSerializer):
     duration = serializers.CharField(source='customer_services.duration', read_only=True)
     price = serializers.CharField(source='customer_services.price_per_child', read_only=True)
     child = serializers.CharField(source='child.name', read_only=True)
-    child_bday = serializers.CharField(source='children.years', read_only=True)
+    child_bday = serializers.SerializerMethodField()
 
 
     class Meta:
@@ -29,3 +30,12 @@ class BookingsSerializer(serializers.ModelSerializer):
             'created_at', 'updated_at',
         ]
         read_only_fields = ('id', 'public_id', 'booking_price','created_at', 'updated_at', 'booking_date', 'booking_validation_date')
+    
+    def get_child_bday(self, obj):
+        if obj.child and obj.child.birth_date:
+            today = date.today()
+            age = today.year - obj.child.birth_date.year - (
+                (today.month, today.day) < (obj.child.birth_date.month, obj.child.birth_date.day)
+            )
+            return age
+        return None
