@@ -54,7 +54,6 @@ class Children(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     name = models.CharField(max_length=255)
     birth_date = models.DateField(null=True, blank=True)
-    years = models.IntegerField(null=True, blank=True)
     allergies = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

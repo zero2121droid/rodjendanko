@@ -12,6 +12,9 @@ class ChildrenSerializer(serializers.ModelSerializer):
         model = Children
         fields = '__all__'
         read_only_fields = ['years', 'created_at', 'updated_at']
+    
+    def get_years(self, obj):
+        return obj.years
 
 # ---------------------------------------------------------------------
 # Users Serializer
