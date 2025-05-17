@@ -14,6 +14,6 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Children)
 class ChildrenAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Children._meta.fields]
+    list_display = [field.name for field in Children._meta.fields] + ['years']
     search_fields = ('name',)
     ordering = ('-created_at',)
