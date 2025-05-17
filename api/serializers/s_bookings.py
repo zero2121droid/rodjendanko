@@ -13,8 +13,8 @@ class BookingsSerializer(serializers.ModelSerializer):
     service_name = serializers.CharField(source='customer_services.service_name', read_only=True)
     duration = serializers.CharField(source='customer_services.duration', read_only=True)
     price = serializers.CharField(source='customer_services.price_per_child', read_only=True)
-    child = serializers.CharField(source='children.name', read_only=True)
-    child_bday = serializers.CharField(source='children.years', read_only=True)
+    child = serializers.CharField(source='child.name', read_only=True)
+    child_bday = serializers.CharField(source='child.years', read_only=True)
 
 
     class Meta:
@@ -25,7 +25,7 @@ class BookingsSerializer(serializers.ModelSerializer):
             'location', 'location_public_id', 'location_name',
             'user', 'user_public_id', 'status', 'duration',
             'booking_date', 'booking_start_time','booking_validation_date',
-            'booking_end_time','booking_type', 'booking_price','children_count', 'child','price', 'child', 'child_bday', 'description',
+            'booking_end_time','booking_type', 'booking_price','children_count', 'child', 'price', 'child', 'child_bday', 'description',
             'created_at', 'updated_at',
         ]
         read_only_fields = ('id', 'public_id', 'booking_price','created_at', 'updated_at', 'booking_date', 'booking_validation_date')
