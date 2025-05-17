@@ -3,12 +3,13 @@ from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from playrooms.models import Customer, Location, LocationImages, LocationWorkingHours
 from api.serializers.s_location import LocationSerializer, LocationImagesSerializer, LocationWorkingHoursSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
 # ---------------------------------------------------------------------
 # Location ViewSet
 # ---------------------------------------------------------------------
 class LocationViewSet(viewsets.ModelViewSet):
     serializer_class = LocationSerializer
-
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["location_name", "location_address", "description"]
     filterset_fields = ["customer"]  # primer za precizno filtriranje
@@ -41,7 +42,7 @@ class LocationViewSet(viewsets.ModelViewSet):
 # --------------------------------------------------------------------- 
 class LocationImagesViewSet(viewsets.ModelViewSet):
     serializer_class = LocationImagesSerializer
-
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["location_image_url", "description"]
     filterset_fields = ["location"]  # primer za precizno filtriranje
@@ -71,7 +72,8 @@ class LocationImagesViewSet(viewsets.ModelViewSet):
 # ---------------------------------------------------------------------
 class LocationWorkingHoursViewSet(viewsets.ModelViewSet):
     serializer_class = LocationWorkingHoursSerializer
-
+    permission_classes = [IsAuthenticated]
+    # permission_classes = [AllowAny]  # samo za testiranje
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["location_opening_time", "location_closing_time", "location_brake_duration"]
     filterset_fields = ["location"]  # primer za precizno filtriranje

@@ -2,6 +2,7 @@ from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from services.models import CustomerServices, PartnerServices, OtherServices, ServicesImages
 from api.serializers.s_services import CustomerServicesSerializer, PartnerServicesSerializer, OtherServicesSerializer, ServicesImagesSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 # ---------------------------------------------------------------------
 # Customer Services ViewSet
@@ -14,6 +15,7 @@ class CustomerServicesViewSet(viewsets.ModelViewSet):
     filterset_fields = ["service_type", "location"]  # primer za precizno filtriranje
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -25,7 +27,7 @@ class CustomerServicesViewSet(viewsets.ModelViewSet):
 # ---------------------------------------------------------------------
 class PartnerServicesViewSet(viewsets.ModelViewSet):
     serializer_class = PartnerServicesSerializer
-
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["product_name", "description", "customer"]
     filterset_fields = ["customer"]  # primer za precizno filtriranje
@@ -57,7 +59,7 @@ class OtherServicesViewSet(viewsets.ModelViewSet):
 # ---------------------------------------------------------------------
 class ServicesImagesViewSet(viewsets.ModelViewSet):
     serializer_class = ServicesImagesSerializer
-
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["service_type", "service_id"]
     filterset_fields = ["service_type"]  # primer za precizno filtriranje
