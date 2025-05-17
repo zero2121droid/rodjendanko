@@ -25,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'public_id', 'username', 'first_name', 'last_name','address', 'city', 'phone', 'email',
-            'password', 'coins_wallet', 'bookings','description', 'created_at', 'updated_at', 'children', 'owner', 'is_active', 'user_type', 'customer_id'
+            'password', 'coins_wallet', 'bookings','description', 'created_at', 'updated_at', 'children', 'owner', 'is_active', 'user_type'
         ]
         extra_kwargs = {
             'password': {'write_only': True, 'required': False},
