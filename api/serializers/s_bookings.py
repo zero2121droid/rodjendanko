@@ -14,7 +14,7 @@ class BookingsSerializer(serializers.ModelSerializer):
     duration = serializers.CharField(source='customer_services.duration', read_only=True)
     price = serializers.CharField(source='customer_services.price_per_child', read_only=True)
     child = serializers.CharField(source='child.name', read_only=True)
-    cchild_bday = serializers.CharField(source='children.years', read_only=True)
+    child_bday = serializers.CharField(source='children.years', read_only=True)
 
 
     class Meta:
