@@ -14,6 +14,10 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Children)
 class ChildrenAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Children._meta.fields] + ['years']
+    list_display = [field.name for field in Children._meta.fields] + ['get_years']
     search_fields = ('name',)
     ordering = ('-created_at',)
+
+    def get_years(self, obj):
+        return obj.years
+    get_years.short_description = 'Years'
