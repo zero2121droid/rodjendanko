@@ -8,10 +8,11 @@ from api.serializers.s_bookings import BookingsSerializer
 # ---------------------------------------------------------------------
 
 class ChildrenSerializer(serializers.ModelSerializer):
+    years = serializers.SerializerMethodField()
     class Meta:
         model = Children
         fields = '__all__'
-        read_only_fields = ['years', 'created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at']
     
     def get_years(self, obj):
         return obj.years
