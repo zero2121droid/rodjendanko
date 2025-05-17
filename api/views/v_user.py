@@ -12,6 +12,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils.crypto import get_random_string
+from users.permissions import IsOwnerOrAdmin
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -89,15 +90,17 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class ChildrenViewSet(viewsets.ModelViewSet):
     serializer_class = ChildrenSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["name"]
-    filterset_fields = ["user"]
 
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return Children.objects.all().order_by("created_at")
         return Children.objects.filter(user=user).order_by("created_at")
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
     
   
