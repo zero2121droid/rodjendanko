@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from reservations.filters import BookingFilter
+from django.utils.timezone import now
 
 # ---------------------------------------------------------------------
 # Bookings Permissions
@@ -66,3 +67,18 @@ class BookingsViewSet(viewsets.ModelViewSet):
         now = timezone.now()
         count = Bookings.objects.filter(user=user, booking_start_time__gte=now).count()
         return Response({'count': count})
+    # ---------------------------------------------------------------------
+    # Endpoint za preuzimanje svih aktivnih rezervacija
+    # ---------------------------------------------------------------------
+    @action(detail=False, methods=['get'], url_path='active')
+    def active_bookings(self, request):
+        today = now().date()
+        active = self.get_queryset().filter(booking_date__gte=today)
+
+        page = self.paginate_queryset(active)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(active, many=True)
+        return Response(serializer.data)
