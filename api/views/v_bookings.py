@@ -76,19 +76,8 @@ class BookingsViewSet(viewsets.ModelViewSet):
     def active_bookings(self, request):
         now_dt = timezone.now()
 
-        # Kombinuj date + time u datetime
-        booking_date_as_datetime = Cast(F('booking_date'), output_field=DateTimeField())
-        booking_end_time_as_datetime = Cast(F('booking_end_time'), output_field=DateTimeField())
-
-        booking_end_datetime = ExpressionWrapper(
-            booking_date_as_datetime + booking_end_time_as_datetime,
-            output_field=DateTimeField()
-        )
-
-        active = self.get_queryset().annotate(
-            booking_end_datetime=booking_end_datetime
-        ).filter(
-            booking_end_datetime__gte=now_dt
+        active = self.get_queryset().filter(
+            booking_end_time__gte=now_dt
         )
 
         page = self.paginate_queryset(active)
