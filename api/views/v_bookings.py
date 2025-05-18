@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from reservations.filters import BookingFilter
 from django.utils.timezone import now
-from django.db.models import F, ExpressionWrapper, DateTimeField
+from django.db.models import Func,F, ExpressionWrapper, DateTimeField
 
 # ---------------------------------------------------------------------
 # Bookings Permissions
@@ -71,15 +71,21 @@ class BookingsViewSet(viewsets.ModelViewSet):
     # ---------------------------------------------------------------------
     # Endpoint za preuzimanje svih aktivnih rezervacija
     # ---------------------------------------------------------------------
+    class CastTimeToInterval(Func):
+        function = 'CAST'
+        template = "CAST(%(expressions)s AS interval)"
+
     @action(detail=False, methods=['get'], url_path='active')
     def active_bookings(self, request):
         now_dt = now()
 
+        booking_end_interval = self.CastTimeToInterval(F('booking_end_time'))
+
         booking_end_datetime = ExpressionWrapper(
-            F('booking_date') + F('booking_end_time'),
+            F('booking_date') + booking_end_interval,
             output_field=DateTimeField()
         )
-        
+
         active = self.get_queryset().annotate(
             booking_end_datetime=booking_end_datetime
         ).filter(
