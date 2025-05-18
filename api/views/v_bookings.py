@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from reservations.filters import BookingFilter
 from django.utils.timezone import now
+from django.db.models import F, ExpressionWrapper, DateTimeField
 
 # ---------------------------------------------------------------------
 # Bookings Permissions
@@ -72,8 +73,18 @@ class BookingsViewSet(viewsets.ModelViewSet):
     # ---------------------------------------------------------------------
     @action(detail=False, methods=['get'], url_path='active')
     def active_bookings(self, request):
-        today = now().date()
-        active = self.get_queryset().filter(booking_date__gte=today)
+        now_dt = now()
+
+        booking_end_datetime = ExpressionWrapper(
+            F('booking_date') + F('booking_end_time'),
+            output_field=DateTimeField()
+        )
+        
+        active = self.get_queryset().annotate(
+            booking_end_datetime=booking_end_datetime
+        ).filter(
+            booking_end_datetime__gte=now_dt
+        )
 
         page = self.paginate_queryset(active)
         if page is not None:
