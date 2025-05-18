@@ -10,6 +10,7 @@ from django.utils import timezone
 from reservations.filters import BookingFilter
 from django.utils.timezone import now
 from django.db.models import Func,F, ExpressionWrapper, DateTimeField
+from django.db.models.functions import Cast
 
 # ---------------------------------------------------------------------
 # Bookings Permissions
@@ -71,18 +72,16 @@ class BookingsViewSet(viewsets.ModelViewSet):
     # ---------------------------------------------------------------------
     # Endpoint za preuzimanje svih aktivnih rezervacija
     # ---------------------------------------------------------------------
-    class CastTimeToInterval(Func):
-        function = 'CAST'
-        template = "CAST(%(expressions)s AS interval)"
-
     @action(detail=False, methods=['get'], url_path='active')
     def active_bookings(self, request):
-        now_dt = now()
+        now_dt = timezone.now()
 
-        booking_end_interval = self.CastTimeToInterval(F('booking_end_time'))
+        # Kombinuj date + time u datetime
+        booking_date_as_datetime = Cast(F('booking_date'), output_field=DateTimeField())
+        booking_end_time_as_datetime = Cast(F('booking_end_time'), output_field=DateTimeField())
 
         booking_end_datetime = ExpressionWrapper(
-            F('booking_date') + booking_end_interval,
+            booking_date_as_datetime + booking_end_time_as_datetime,
             output_field=DateTimeField()
         )
 
@@ -97,5 +96,5 @@ class BookingsViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(active, many=True)
+        serializer = self.get_serializer(active, many=True) 
         return Response(serializer.data)
