@@ -78,6 +78,14 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         # override default validacije da koristi email
         username_field = User.EMAIL_FIELD
         attrs['username'] = attrs.get('email')
-        return super().validate(attrs)
+        data = super().validate(attrs)
+
+        # Dodaj user info u response
+        data['user'] = {
+            'id': self.user.id,
+            'email': self.user.email,
+            'is_admin': self.user.is_staff  # ili self.user.is_superuser
+        }
+        return data
 # ---------------------------------------------------------------------
 
