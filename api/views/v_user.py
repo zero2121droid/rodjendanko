@@ -35,6 +35,11 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return User.objects.filter(id=user.id).order_by("created_at")
     
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def me(self, request):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
+    
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def register(self, request):
         """
