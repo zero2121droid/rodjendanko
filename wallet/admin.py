@@ -2,6 +2,14 @@ from django.contrib import admin, messages
 from wallet.models import CoinsWallet, CoinsTransaction
 from django.utils import timezone
 
+@admin.register(CoinsTransaction)
+class CoinsTransactionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'customer', 'coins_amount', 'transaction_type', 'description', 'time_stamp')
+    list_filter = ('transaction_type', 'time_stamp')
+    search_fields = ('user__name', 'customer__name', 'description')
+    readonly_fields = ('time_stamp',)
+    ordering = ["-time_stamp"]
+
 @admin.register(CoinsWallet)
 class CoinsWalletAdmin(admin.ModelAdmin):
     list_display = ('id', 'user','coins_balance', 'created_at', 'updated_at')
