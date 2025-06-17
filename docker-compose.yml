@@ -10,6 +10,8 @@ services:
       - "8086:8000"
     depends_on:
       - db_rodjendanko
+    volumes:
+      - media_volume:/app/media
     environment:
       - DJANGO_SETTINGS_MODULE=rodjendanko_backend.settings
       - PYTHONPATH=/app
@@ -35,3 +37,4 @@ services:
 
 volumes:
   postgres_data:
+  media_volume:
