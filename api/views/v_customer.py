@@ -2,7 +2,7 @@ from rest_framework import viewsets, filters, status, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from playrooms.models import Customer
 from api.serializers.s_customer import CustomerSerializer
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, SAFE_METHODS
 from api.serializers.s_customer_registration import CustomerRegistrationSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -13,6 +13,10 @@ from rest_framework.decorators import action
 # ---------------------------------------------------------------------
 class IsOwnerOfCustomer(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
+        # Dozvoli read-only pristup svima koji su autentifikovani
+        if request.method in SAFE_METHODS:
+            return True
+        # Za pisanje, dozvoli samo vlasniku ili superuseru
         return obj.user == request.user or request.user.is_superuser
 
 # ---------------------------------------------------------------------
@@ -29,7 +33,4 @@ class CustomerViewSet(viewsets.ModelViewSet):
     ordering = ["created_at"]  # defaultno sortiranje po created_at
 
     def get_queryset(self):
-        user = self.request.user
-        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
-            return Customer.objects.all().order_by("created_at")
-        return Customer.objects.filter(user=user).order_by("created_at")
+        return Customer.objects.all().order_by("created_at")

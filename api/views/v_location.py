@@ -17,10 +17,7 @@ class LocationViewSet(viewsets.ModelViewSet):
     ordering = ["created_at"]  # defaultno sortiranje po created_at
 
     def get_queryset(self):
-        user = self.request.user
-        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
-            return Location.objects.all()
-        return Location.objects.filter(customer__user=user)  # filtriraj po korisniku koji je vlasnik lokacije
+        return Location.objects.all()
     
     # -------------------------------------------------
     # Ova funkcija perform_update se poziva kada se kreira nova lokacija.
