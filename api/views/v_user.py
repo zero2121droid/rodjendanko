@@ -92,6 +92,20 @@ class UserViewSet(viewsets.ModelViewSet):
 
         except Exception as e:
             return Response({'error': 'Nevalidan token', 'detalji': str(e)}, status=400)
+    
+    def update(self, request, *args, **kwargs):
+        user = request.user
+        target_user = self.get_object()
+
+        if 'is_active' in request.data and not (
+            user.is_superuser or user.groups.filter(name="AdminGroup").exists()
+        ):
+            return Response(
+                {'detail': 'Nemate dozvolu da menjate aktivnost korisnika.'},
+                status=403
+            )
+
+        return super().update(request, *args, **kwargs)
 
 class ChildrenViewSet(viewsets.ModelViewSet):
     serializer_class = ChildrenSerializer

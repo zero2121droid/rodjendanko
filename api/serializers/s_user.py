@@ -35,8 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True, 'required': False},
             'coins_wallet': {'read_only': True},
             'created_at': {'read_only': True},
-            'updated_at': {'read_only': True},
-            'is_active': {'read_only': True},
+            'updated_at': {'read_only': True}
         }
 
     def create(self, validated_data):
