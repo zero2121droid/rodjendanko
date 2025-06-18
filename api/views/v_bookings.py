@@ -27,6 +27,8 @@ class IsBookingOwnerOrCustomerOrAdmin(permissions.BasePermission):
         user = request.user
         if user.is_superuser:
             return True
+        if user.groups.filter(name="AdminGroup").exists():
+            return True
         if obj.user == user:
             return True
         if hasattr(user, 'customer_profile') and obj.customer == user.customer_profile:
@@ -65,14 +67,10 @@ class BookingsViewSet(viewsets.ModelViewSet):
     
     def update(self, request, *args, **kwargs):
         booking = self.get_object()
-
-    # Dodatna sigurnost: samo vlasnik ili admin može menjati vreme i datum
         user = request.user
-        if not (
-            user.is_superuser or
-            (hasattr(user, 'customer_profile') and booking.customer == user.customer_profile)
-        ):
-        # Ako je običan korisnik, može menjati samo opis ili otkazati rezervaciju
+        is_admin = user.is_superuser or user.groups.filter(name="AdminGroup").exists()
+        is_customer = hasattr(user, 'customer_profile') and booking.customer == user.customer_profile
+        if not (is_admin or is_customer):
             allowed_fields = {'description', 'status'}
             if not set(request.data.keys()).issubset(allowed_fields):
                 return Response(
