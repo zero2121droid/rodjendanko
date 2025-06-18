@@ -46,3 +46,4 @@ class BookingsSerializer(serializers.ModelSerializer):
             )
             return age
         return None
+    

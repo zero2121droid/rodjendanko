@@ -62,6 +62,24 @@ class BookingsViewSet(viewsets.ModelViewSet):
             title="Uspešna rezervacija",
             message=f"Vaša rezervacija za {booking.location.location_name} je uspešno kreirana.",
         )
+    
+    def update(self, request, *args, **kwargs):
+        booking = self.get_object()
+
+    # Dodatna sigurnost: samo vlasnik ili admin može menjati vreme i datum
+        user = request.user
+        if not (
+            user.is_superuser or
+            (hasattr(user, 'customer_profile') and booking.customer == user.customer_profile)
+        ):
+        # Ako je običan korisnik, može menjati samo opis ili otkazati rezervaciju
+            allowed_fields = {'description', 'status'}
+            if not set(request.data.keys()).issubset(allowed_fields):
+                return Response(
+                    {"detail": "Nemate dozvolu da menjate ove informacije."},
+                    status=403
+                )
+        return super().update(request, *args, **kwargs)
 
     @action(detail=False, methods=['get'], url_path='user-booking-count')
     def user_booking_count(self, request):
