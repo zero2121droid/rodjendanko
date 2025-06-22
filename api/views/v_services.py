@@ -13,7 +13,7 @@ class CustomerServicesViewSet(viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["service_name", "service_type", "description"]
-    filterset_fields = ["service_type", "location"]  # primer za precizno filtriranje
+    #filterset_fields = ["service_type", "location"]  # primer za precizno filtriranje
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
     permission_classes = [IsAuthenticated]
