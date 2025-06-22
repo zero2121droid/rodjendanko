@@ -1,3 +1,4 @@
+import uuid
 from django.forms import ValidationError
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
@@ -78,6 +79,15 @@ class LocationWorkingHoursViewSet(viewsets.ModelViewSet):
     ordering = ["created_at"]  # defaultno sortiranje po created_at
 
     def get_queryset(self):
+        location_param = self.request.query_params.get("location")
+
+        if location_param:
+            try:
+                uuid_obj = uuid.UUID(location_param)
+                return LocationWorkingHours.objects.filter(location__id=uuid_obj).order_by("created_at")
+            except ValueError:
+                return LocationWorkingHours.objects.filter(location__public_id=location_param).order_by("created_at")
+
         return LocationWorkingHours.objects.all().order_by("created_at")
 
     def perform_create(self, serializer):
