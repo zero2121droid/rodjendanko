@@ -1,3 +1,4 @@
+import uuid
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from services.models import CustomerServices, PartnerServices, OtherServices, ServicesImages
@@ -18,6 +19,14 @@ class CustomerServicesViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        service_param = self.request.query_params.get("service")
+        if service_param:
+            try:
+                uuid_obj = uuid.UUID(service_param)
+                return CustomerServices.objects.filter(id=uuid_obj).order_by("created_at")
+            except ValueError:
+                return CustomerServices.objects.filter(public_id=service_param).order_by("created_at")
+
         return CustomerServices.objects.all().order_by("created_at")
 # ---------------------------------------------------------------------
 # Partner Services ViewSet
