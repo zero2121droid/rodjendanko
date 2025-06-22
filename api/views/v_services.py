@@ -18,10 +18,7 @@ class CustomerServicesViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
-        if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
-            return CustomerServices.objects.all().order_by("created_at")
-        return CustomerServices.objects.filter(location__customer__user=user).order_by("created_at")
+        return CustomerServices.objects.all().order_by("created_at")
 # ---------------------------------------------------------------------
 # Partner Services ViewSet
 # ---------------------------------------------------------------------
