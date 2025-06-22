@@ -96,6 +96,7 @@ class LocationWorkingHours(models.Model):
     location_opening_time = models.TimeField(null=True, blank=True)
     location_closing_time = models.TimeField(null=True, blank=True)
     location_brake_duration = models.IntegerField(null=True, blank=True)
+    event_duration = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
