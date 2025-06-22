@@ -43,7 +43,7 @@ class LocationImagesViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["location_image_url", "description"]
-    filterset_fields = ["location"]  # primer za precizno filtriranje
+    #filterset_fields = ["location"]  # primer za precizno filtriranje
     ordering_fields = ["upload_date", "created_at", "updated_at"]
     ordering = ["upload_date"]  # defaultno sortiranje po upload_date
 
