@@ -19,15 +19,25 @@ class CustomerServicesViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        location_param = self.request.query_params.get("location")
+        queryset = CustomerServices.objects.all()
+
+        if location_param:
+            try:
+                uuid_obj = uuid.UUID(location_param)
+                queryset = queryset.filter(location__id=uuid_obj)
+            except ValueError:
+                queryset = queryset.filter(location__public_id=location_param)
+
         service_param = self.request.query_params.get("service")
         if service_param:
             try:
                 uuid_obj = uuid.UUID(service_param)
-                return CustomerServices.objects.filter(id=uuid_obj).order_by("created_at")
+                queryset = queryset.filter(id=uuid_obj)
             except ValueError:
-                return CustomerServices.objects.filter(public_id=service_param).order_by("created_at")
+                queryset = queryset.filter(public_id=service_param)
 
-        return CustomerServices.objects.all().order_by("created_at")
+        return queryset.order_by("created_at")
 # ---------------------------------------------------------------------
 # Partner Services ViewSet
 # ---------------------------------------------------------------------
