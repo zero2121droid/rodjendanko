@@ -1,3 +1,4 @@
+from decimal import Decimal
 from rest_framework import serializers
 from reservations.models import Bookings
 from services.models import CustomerServices
@@ -49,3 +50,21 @@ class BookingsSerializer(serializers.ModelSerializer):
             return age
         return None
     
+    def create(self, validated_data):
+        services = validated_data.pop('customer_services', [])
+        children_count = validated_data.get('children_count')
+
+        # Izračunaj cenu ako je moguće
+        if children_count is not None and services:
+            total_price_per_child = sum(
+                service.price_per_child for service in services if service.price_per_child is not None
+            )
+            validated_data['booking_price'] = Decimal(children_count) * total_price_per_child
+
+        # Kreiraj instancu Bookings bez M2M
+        booking = Bookings.objects.create(**validated_data)
+
+        # Dodeli M2M relaciju (nakon što instanca postoji)
+        booking.customer_services.set(services)
+
+        return booking
