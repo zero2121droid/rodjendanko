@@ -41,8 +41,11 @@ class Bookings(models.Model):
                     pass
             self.public_id = f"BKG{next_number:03d}"
             # Izračunaj booking_price ako su dostupni potrebni podaci
-            if self.children_count is not None and self.customer_services and self.customer_services.price_per_child is not None:
-                self.booking_price = Decimal(self.children_count) * self.customer_services.price_per_child
+            if self.children_count is not None and self.customer_services.exists():
+                total_price_per_child = sum(
+                    cs.price_per_child for cs in self.customer_services.all() if cs.price_per_child is not None
+                )
+                self.booking_price = Decimal(self.children_count) * total_price_per_child
         super().save(*args, **kwargs)
 
     def __str__(self):
