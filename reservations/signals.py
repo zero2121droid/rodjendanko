@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from .models import Bookings, BookingStatus
 from notifications.utils import create_notification
 from django.utils import timezone
+from datetime import datetime
 
 @receiver(post_save, sender=Bookings)
 def send_booking_confirmation_notification(sender, instance, created, **kwargs):
@@ -26,8 +27,10 @@ def send_booking_confirmation_notification(sender, instance, created, **kwargs):
 
 @receiver(pre_save, sender=Bookings)
 def set_validation_date_on_status_change(sender, instance, **kwargs):
-    if instance.booking_start_time and not instance.booking_date:
-        instance.booking_date = instance.booking_start_time.date()
+    if instance.booking_start_time:
+        instance.booking_date = instance.booking_start_time.replace(
+            hour=0, minute=0, second=0, microsecond=0
+    )
     # Proveri da li objekat već postoji u bazi (tj. da li je to nova instanca)
     if instance.pk:
         try:
