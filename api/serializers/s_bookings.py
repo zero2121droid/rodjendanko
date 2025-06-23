@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from reservations.models import Bookings
+from services.models import CustomerServices
 from users.models import Children
 from datetime import date
 
@@ -14,6 +15,7 @@ class BookingsSerializer(serializers.ModelSerializer):
     service_name = serializers.CharField(source='customer_services.service_name', read_only=True)
     duration = serializers.CharField(source='customer_services.duration', read_only=True)
     price = serializers.CharField(source='customer_services.price_per_child', read_only=True)
+    customer_services = serializers.PrimaryKeyRelatedField(many=True, queryset=CustomerServices.objects.all())
     
     def __init__(self, *args, **kwargs):
         from api.serializers.s_user import ChildrenSerializer
