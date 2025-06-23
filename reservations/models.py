@@ -12,7 +12,7 @@ class Bookings(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     public_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
     customer = models.ForeignKey('playrooms.Customer', on_delete=models.CASCADE)
-    customer_services = models.ForeignKey('services.CustomerServices', on_delete=models.CASCADE)
+    customer_services = models.ManyToManyField('services.CustomerServices')
     location = models.ForeignKey('playrooms.Location', on_delete=models.CASCADE)
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='bookings_set')
     status = models.CharField(max_length=20, choices=BookingStatus.choices, default=BookingStatus.NA_CEKANJU)
