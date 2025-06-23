@@ -47,6 +47,13 @@ class Bookings(models.Model):
                 )
                 self.booking_price = Decimal(self.children_count) * total_price_per_child
         super().save(*args, **kwargs)
+        if self.children_count is not None and self.customer_services.exists():
+            total_price_per_child = sum(
+                cs.price_per_child for cs in self.customer_services.all() if cs.price_per_child is not None
+            )
+            self.booking_price = Decimal(self.children_count) * total_price_per_child
+            # Moraš ponovo da sačuvaš ako menjaš booking_price
+            super().save(update_fields=['booking_price'])
 
     def __str__(self):
         return f"Booking {self.public_id} - {self.customer} - {self.location} - {self.booking_date} - {self.status}"
