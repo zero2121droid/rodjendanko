@@ -26,6 +26,8 @@ def send_booking_confirmation_notification(sender, instance, created, **kwargs):
 
 @receiver(pre_save, sender=Bookings)
 def set_validation_date_on_status_change(sender, instance, **kwargs):
+    if instance.booking_start_time and not instance.booking_date:
+        instance.booking_date = instance.booking_start_time.date()
     # Proveri da li objekat već postoji u bazi (tj. da li je to nova instanca)
     if instance.pk:
         try:
