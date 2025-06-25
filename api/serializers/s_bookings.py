@@ -76,8 +76,6 @@ class BookingsSerializer(serializers.ModelSerializer):
         return ", ".join(service.service_name for service in services)
 
     def get_duration(self, obj):
-        # Ako ima više usluga, možeš uzeti max, sumu, ili nešto drugo po potrebi
         services = obj.customer_services.all()
-        # Na primer suma trajanja svih usluga:
-        total_duration = sum(service.duration for service in services if service.duration)
+        total_duration = sum(int(service.duration) for service in services if service.duration and str(service.duration).isdigit())
         return total_duration
