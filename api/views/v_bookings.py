@@ -42,7 +42,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
     queryset = Bookings.objects.all()
     serializer_class = BookingsSerializer
     permission_classes = [permissions.IsAuthenticated, IsBookingOwnerOrCustomerOrAdmin]
-
+    lookup_field = 'public_id'
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["customer__name", "location__location_name", "customer_services__service_name", "booking_date"]
     filterset_fields = ['customer', 'location', 'booking_date', 'status']
@@ -103,3 +103,26 @@ class BookingsViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(active, many=True) 
         return Response(serializer.data)
+    # ---------------------------------------------------------------------
+    # Endpoint za otkazivanje rezervacije
+    # ---------------------------------------------------------------------
+    @action(detail=True, methods=["patch"])
+    def cancel(self, request, pk=None):
+        booking = self.get_object()
+
+        # Provera statusa
+        if booking.status != BookingStatus.NA_CEKANJU:
+            return Response({"detail": "Rezervaciju nije moguće otkazati."}, status=400)
+
+        # Provera datuma (7 dana ranije)
+        from datetime import datetime, timedelta
+
+        start_datetime = datetime.combine(booking.booking_date, booking.booking_start_time)
+        if start_datetime - datetime.now() < timedelta(days=7):
+            return Response({"detail": "Rezervaciju je moguće otkazati najkasnije 7 dana unapred."}, status=400)
+
+        # Otkazivanje
+        booking.status = BookingStatus.OTKAZANA
+        booking.save()
+
+        return Response({"detail": "Rezervacija je uspešno otkazana."}, status=200)
