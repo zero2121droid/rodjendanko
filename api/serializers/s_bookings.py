@@ -18,7 +18,7 @@ class BookingsSerializer(serializers.ModelSerializer):
     duration = serializers.SerializerMethodField()
     price = serializers.CharField(source='customer_services.price_per_child', read_only=True)
     customer_services = serializers.PrimaryKeyRelatedField(many=True, queryset=CustomerServices.objects.all())
-    child = ChildrenSerializer(read_only=True) 
+    child = serializers.SerializerMethodField()
 
     class Meta:
         model = Bookings
@@ -75,3 +75,9 @@ class BookingsSerializer(serializers.ModelSerializer):
         services = obj.customer_services.all()
         total_duration = sum(int(service.duration) for service in services if service.duration and str(service.duration).isdigit())
         return total_duration
+    
+    def get_child(self, obj):
+        from api.serializers.s_user import ChildrenSerializer
+        if obj.child:
+            return ChildrenSerializer(obj.child).data
+        return None
