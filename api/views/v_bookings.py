@@ -100,8 +100,8 @@ class BookingsViewSet(viewsets.ModelViewSet):
         now_dt = timezone.now()
 
         active = self.get_queryset().filter(
-            Q(status=BookingStatus.ODBIJEN) |  # Sve odbijene bez obzira na datum
-            Q(status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN], booking_end_time__gte=now_dt)  # Aktivne i na čekanju koje nisu prošle
+            booking_end_time__gte=now_dt,
+            status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN, BookingStatus.ODBIJEN]
         )
 
         page = self.paginate_queryset(active)
@@ -109,7 +109,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(active, many=True)
+        serializer = self.get_serializer(active, many=True) 
         return Response(serializer.data)
     # ---------------------------------------------------------------------
     # Endpoint za otkazivanje rezervacije
