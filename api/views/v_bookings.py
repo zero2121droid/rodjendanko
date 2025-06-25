@@ -85,7 +85,11 @@ class BookingsViewSet(viewsets.ModelViewSet):
     def user_booking_count(self, request):
         user = request.user
         now = timezone.now()
-        count = Bookings.objects.filter(user=user, booking_start_time__gte=now).count()
+        count = Bookings.objects.filter(
+            user=user,
+            booking_end_time__gte=now,
+            status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN, BookingStatus.ODBIJEN]
+        ).count()
         return Response({'count': count})
     # ---------------------------------------------------------------------
     # Endpoint za preuzimanje svih aktivnih rezervacija
