@@ -118,7 +118,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
         # Provera datuma (7 dana ranije)
         from datetime import datetime, timedelta
 
-        start_datetime = datetime.combine(booking.booking_date, booking.booking_start_time)
+        start_datetime = booking.booking_start_time
         if start_datetime - datetime.now() < timedelta(days=7):
             return Response({"detail": "Rezervaciju je moguće otkazati najkasnije 7 dana unapred."}, status=400)
 
