@@ -26,16 +26,17 @@ class BookingsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bookings
-        fields = [
-            'id', 'public_id', 'customer', 'customer_public_id',
-            'customer_services', 'service_name',
-            'location', 'location_public_id', 'location_name',
-            'user', 'user_public_id', 'status', 'duration',
-            'booking_date', 'booking_start_time','booking_validation_date',
-            'booking_end_time','booking_type', 'booking_price','children_count',
-            'child', 'price', 'description',
-            'created_at', 'updated_at',
-        ]
+        # fields = [
+        #     'id', 'public_id', 'customer', 'customer_public_id',
+        #     'customer_services', 'service_name',
+        #     'location', 'location_public_id', 'location_name',
+        #     'user', 'user_public_id', 'status', 'duration',
+        #     'booking_date', 'booking_start_time','booking_validation_date',
+        #     'booking_end_time','booking_type', 'booking_price','children_count',
+        #     'child', 'price', 'description',
+        #     'created_at', 'updated_at',
+        # ]
+        fields = '__all__'
         read_only_fields = (
             'id', 'public_id', 'booking_price','created_at', 'updated_at',
             'booking_date', 'booking_validation_date'
