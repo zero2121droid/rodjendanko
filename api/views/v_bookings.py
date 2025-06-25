@@ -12,6 +12,7 @@ from django.utils.timezone import now
 from django.db.models import Func,F, ExpressionWrapper, DateTimeField
 from django.db.models.functions import Cast
 from reservations.models import BookingStatus
+from django.utils.timezone import make_aware
 
 # ---------------------------------------------------------------------
 # Bookings Permissions
@@ -119,7 +120,10 @@ class BookingsViewSet(viewsets.ModelViewSet):
         from datetime import datetime, timedelta
 
         start_datetime = booking.booking_start_time
-        if start_datetime - datetime.now() < timedelta(days=7):
+        if timezone.is_naive(start_datetime):
+            start_datetime = make_aware(start_datetime)
+
+        if start_datetime - timezone.now() < timedelta(days=7):
             return Response({"detail": "Rezervaciju je moguće otkazati najkasnije 7 dana unapred."}, status=400)
 
         # Otkazivanje
