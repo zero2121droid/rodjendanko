@@ -127,7 +127,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
             return Response({"detail": "Rezervaciju je moguće otkazati najkasnije 7 dana unapred."}, status=400)
 
         # Otkazivanje
-        booking.status = BookingStatus.OTKAZANA
+        booking.status = BookingStatus.OTKAZAN
         booking.save()
 
         return Response({"detail": "Rezervacija je uspešno otkazana."}, status=200)
