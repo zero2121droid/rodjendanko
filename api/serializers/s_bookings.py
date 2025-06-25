@@ -13,8 +13,8 @@ class BookingsSerializer(serializers.ModelSerializer):
     location_public_id = serializers.CharField(source='location.public_id', read_only=True)
     user_public_id = serializers.CharField(source='user.public_id', read_only=True)
     location_name = serializers.CharField(source='location.location_name', read_only=True)
-    service_name = serializers.CharField(source='customer_services.service_name', read_only=True)
-    duration = serializers.CharField(source='customer_services.duration', read_only=True)
+    service_name = serializers.SerializerMethodField()
+    duration = serializers.SerializerMethodField()
     price = serializers.CharField(source='customer_services.price_per_child', read_only=True)
     customer_services = serializers.PrimaryKeyRelatedField(many=True, queryset=CustomerServices.objects.all())
     
@@ -69,3 +69,15 @@ class BookingsSerializer(serializers.ModelSerializer):
         booking.customer_services.set(services)
 
         return booking
+    
+    def get_service_name(self, obj):
+        # Ako ima više usluga, prikazati ih spojene zarezom
+        services = obj.customer_services.all()
+        return ", ".join(service.service_name for service in services)
+
+    def get_duration(self, obj):
+        # Ako ima više usluga, možeš uzeti max, sumu, ili nešto drugo po potrebi
+        services = obj.customer_services.all()
+        # Na primer suma trajanja svih usluga:
+        total_duration = sum(service.duration for service in services if service.duration)
+        return total_duration

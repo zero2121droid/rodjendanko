@@ -42,7 +42,7 @@ class IsBookingOwnerOrCustomerOrAdmin(permissions.BasePermission):
 # Bookings ViewSet
 # ---------------------------------------------------------------------
 class BookingsViewSet(viewsets.ModelViewSet):
-    queryset = Bookings.objects.all()
+    queryset = Bookings.objects.all().select_related('child', 'location', 'user').prefetch_related('customer_services')
     serializer_class = BookingsSerializer
     permission_classes = [permissions.IsAuthenticated, IsBookingOwnerOrCustomerOrAdmin]
     lookup_field = 'public_id'
