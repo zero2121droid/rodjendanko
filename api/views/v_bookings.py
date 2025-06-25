@@ -95,7 +95,8 @@ class BookingsViewSet(viewsets.ModelViewSet):
         now_dt = timezone.now()
 
         active = self.get_queryset().filter(
-            booking_end_time__gte=now_dt
+            booking_end_time__gte=now_dt,
+            status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN, BookingStatus.ODBIJEN]
         )
 
         page = self.paginate_queryset(active)
