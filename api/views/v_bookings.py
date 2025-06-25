@@ -11,6 +11,7 @@ from reservations.filters import BookingFilter
 from django.utils.timezone import now
 from django.db.models import Func,F, ExpressionWrapper, DateTimeField
 from django.db.models.functions import Cast
+from reservations.models import BookingStatus
 
 # ---------------------------------------------------------------------
 # Bookings Permissions
