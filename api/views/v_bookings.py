@@ -108,7 +108,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
     # Endpoint za otkazivanje rezervacije
     # ---------------------------------------------------------------------
     @action(detail=True, methods=["patch"])
-    def cancel(self, request, pk=None):
+    def cancel(self, request, public_id=None):
         booking = self.get_object()
 
         # Provera statusa
