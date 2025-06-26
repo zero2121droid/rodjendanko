@@ -49,12 +49,18 @@ class User(AbstractUser):
             self.public_id = f"USR{next_number:03d}"
         super().save(*args, **kwargs)
 
+# Function to generate a unique upload path for child images
+
+def child_image_upload_path(instance, filename):
+    return f'children/{instance.id}/{filename}'
+
 class Children(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     name = models.CharField(max_length=255)
     birth_date = models.DateField(null=True, blank=True)
     allergies = models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to=child_image_upload_path, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
