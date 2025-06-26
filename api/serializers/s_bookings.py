@@ -4,7 +4,7 @@ from reservations.models import Bookings
 from services.models import CustomerServices
 from users.models import Children
 from datetime import date
-from api.models import Rating
+from reservations.models import Rating
 
 # ---------------------------------------------------------------------
 # Bookings Serializer
