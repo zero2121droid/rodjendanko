@@ -1,6 +1,8 @@
 from django.db import models
 import uuid
 from decimal import Decimal
+from django.conf import settings
+from playrooms.models import Location
 
 class BookingStatus(models.TextChoices):
     NA_CEKANJU = 'NA_CEKANJU', 'Na čekanju'
@@ -44,3 +46,14 @@ class Bookings(models.Model):
 
     def __str__(self):
         return f"Booking {self.public_id} - {self.customer} - {self.location} - {self.booking_date} - {self.status}"
+
+class Rating(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='ratings')
+    booking = models.OneToOneField("Bookings", on_delete=models.CASCADE, related_name="rating")
+    rating = models.PositiveSmallIntegerField()
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'location', 'booking')
