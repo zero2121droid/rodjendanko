@@ -4,6 +4,7 @@ from reservations.models import Bookings
 from services.models import CustomerServices
 from users.models import Children
 from datetime import date
+from api.models import Rating
 
 # ---------------------------------------------------------------------
 # Bookings Serializer
@@ -19,6 +20,7 @@ class BookingsSerializer(serializers.ModelSerializer):
     customer_services = serializers.PrimaryKeyRelatedField(many=True, queryset=CustomerServices.objects.all())
     child = serializers.PrimaryKeyRelatedField(queryset=Children.objects.all(), allow_null=True, required=False)
     child_data = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Bookings
@@ -86,3 +88,7 @@ class BookingsSerializer(serializers.ModelSerializer):
         if obj.child:
             return ChildrenSerializer(obj.child).data
         return None
+    
+    def get_rating(self, obj):
+        rating = Rating.objects.filter(booking=obj).first()
+        return rating.rating if rating else None
