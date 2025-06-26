@@ -9,6 +9,7 @@ from api.serializers.s_bookings import BookingsSerializer
 
 class ChildrenSerializer(serializers.ModelSerializer):
     years = serializers.SerializerMethodField()
+    image = serializers.ImageField(required=False, allow_null=True)
     class Meta:
         model = Children
         fields = '__all__'

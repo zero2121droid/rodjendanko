@@ -13,6 +13,7 @@ from google.auth.transport import requests as google_requests
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils.crypto import get_random_string
 from users.permissions import IsOwnerOrAdmin
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -112,6 +113,7 @@ class ChildrenViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["name"]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_queryset(self):
         user = self.request.user
