@@ -52,7 +52,7 @@ class User(AbstractUser):
 # Function to generate a unique upload path for child images
 
 def child_image_upload_path(instance, filename):
-    return f'children/{instance.id}/{filename}'
+    return f'users/{instance.user.id}/children/{instance.id}/{filename}'
 
 class Children(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -67,15 +67,6 @@ class Children(models.Model):
     def __str__(self):
         return f"{self.name} ({self.birth_date})" if self.name else "Unnamed child"
     
-    # def save(self, *args, **kwargs):
-    #     if self.birth_date:
-    #         today = date.today()
-    #         self.years = today.year - self.birth_date.year - (
-    #             (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
-    #         )
-    #     self.updated_at = timezone.now()
-    #     super().save(*args, **kwargs)
-    
     @property
     def years(self):
         if self.birth_date:
@@ -84,6 +75,7 @@ class Children(models.Model):
                 (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
             )
         return None
+    
 
 
 
