@@ -1,12 +1,14 @@
 
-from django.db.models.signals import post_save
+import os
+import shutil
+import logging
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from users.models import User
+from users.models import User, Children
 from playrooms.models import Customer
 from wallet.models import CoinsWallet
 from django.contrib.auth import get_user_model
 from notifications.utils import create_notification
-import logging
 from django.contrib.auth.models import Group
 # ---------------------------------------------------------------------
 # Signals
@@ -47,4 +49,19 @@ def create_notification_for_customer(sender, instance, created, **kwargs):
             message="Uspešno ste se registrovali na Rodjendarijum kao vlasnik igraonice.",
         )
         logger.info(f"[Customer Notif] Poslata notifikacija dobrodošlice korisniku {instance.name}")
+
+# Briše folder slike deteta kada se obriše instanca Children modela
+@receiver(post_delete, sender=Children)
+def delete_child_image_folder(sender, instance, **kwargs):
+    if instance.image:
+        image_path = instance.image.path
+        folder_path = os.path.dirname(image_path)
+
+        # Obriši fajl ako postoji
+        if os.path.isfile(image_path):
+            os.remove(image_path)
+
+        # Obriši ceo folder ako postoji
+        if os.path.isdir(folder_path):
+            shutil.rmtree(folder_path)
 

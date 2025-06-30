@@ -4,6 +4,11 @@ from django.utils import timezone
 import uuid
 from django.contrib.auth.models import AbstractUser
 from datetime import date
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+import os
+import shutil
+from django.conf import settings
 
 class User(AbstractUser):
     public_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
@@ -67,6 +72,18 @@ class Children(models.Model):
     def __str__(self):
         return f"{self.name} ({self.birth_date})" if self.name else "Unnamed child"
     
+    def save(self, *args, **kwargs):
+        try:
+            # Uzimamo instancu iz baze pre nego što se izvrši update
+            old_instance = Children.objects.get(pk=self.pk)
+            if old_instance.image and old_instance.image != self.image:
+                # Ako je stara slika različita od nove -> brišemo staru
+                old_instance.image.delete(save=False)
+        except Children.DoesNotExist:
+            pass  # Novi objekat, nema prethodne slike
+
+        super().save(*args, **kwargs)
+    
     @property
     def years(self):
         if self.birth_date:
@@ -75,8 +92,14 @@ class Children(models.Model):
                 (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
             )
         return None
-    
 
+@receiver(post_delete, sender=Children)
+def delete_child_folder_on_delete(sender, instance, **kwargs):
+    folder_path = os.path.join(settings.MEDIA_ROOT, 'children', str(instance.id))
+
+    # Briši celu fasciklu ako postoji
+    if os.path.isdir(folder_path):
+        shutil.rmtree(folder_path)
 
 
 
