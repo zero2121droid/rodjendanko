@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'drf_yasg',
     'corsheaders',
     'wallet',
-    'users',
     'notifications',
     'playrooms',
     'dj_rest_auth',
