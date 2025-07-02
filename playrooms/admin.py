@@ -5,7 +5,7 @@ from .models import Location, LocationImages, LocationWorkingHours, Customer
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ("name", "address", "city", "phone", "created_at")
+    list_display = ("name", "owner","address", "city", "phone", "created_at")
     search_fields = ("name", "address", "city", "phone")
     list_filter = ("name",)
     ordering = ["-created_at"]
