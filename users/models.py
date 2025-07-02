@@ -14,7 +14,7 @@ class User(AbstractUser):
     public_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
     USER_TYPES = [
         ('admin', 'Admin'),
-        #('customer', 'Customer'),
+        ('customer', 'Customer'),
         ('partner', 'Partner'),
         ('user', 'Regular User'),
     ]
