@@ -39,6 +39,37 @@ class IsBookingOwnerOrCustomerOrAdmin(permissions.BasePermission):
         if hasattr(user, 'customer_profile') and obj.customer == user.customer_profile:
             return True
         return False
+# ---------------------------------------------------------------------
+# Helper function to calculate available slots
+# ---------------------------------------------------------------------
+def calculate_available_slots(working_hours, bookings, date_obj):
+    start_minutes = working_hours.location_opening_time.hour * 60 + working_hours.location_opening_time.minute
+    end_minutes = working_hours.location_closing_time.hour * 60 + working_hours.location_closing_time.minute
+    duration = working_hours.event_duration * 60  # u minutima
+    pause = working_hours.location_brake_duration or 30
+
+    slots = []
+    t = start_minutes
+    while t + duration <= end_minutes:
+        slot_start_time = time(hour=t // 60, minute=t % 60)
+        slot_start_dt = datetime.combine(date_obj, slot_start_time)
+        slot_end_dt = slot_start_dt + timedelta(minutes=duration)
+
+        is_taken = False
+        for booking in bookings:
+            if booking.booking_start_time < slot_end_dt and booking.booking_end_time > slot_start_dt:
+                is_taken = True
+                break
+
+        slots.append({
+            "start": slot_start_dt.isoformat(),
+            "end": slot_end_dt.isoformat(),
+            "taken": is_taken
+        })
+
+        t += duration + pause
+
+    return slots
 
 # ---------------------------------------------------------------------
 # Bookings ViewSet
@@ -145,9 +176,9 @@ class BookingsViewSet(viewsets.ModelViewSet):
 
         # Uzimamo samo rezervacije koje nisu otkazane
         bookings = Bookings.objects.filter(
-            location_id=location_id,
+            location__public_id=location_id,
             status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN]
-        ).only('booking_start_time', 'booking_end_time')
+        )
 
         # Vraćamo samo potrebna polja za frontend
         data = [
@@ -211,59 +242,46 @@ class BookingsViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], url_path='available-slots')
     def available_slots(self, request):
         location_id = request.query_params.get('location_id')
-        date_str = request.query_params.get('date')
-        if not location_id or not date_str:
-            return Response({"detail": "location_id i date su obavezni"}, status=400)
+        date_from_str = request.query_params.get('date_from')
+        date_to_str = request.query_params.get('date_to')
 
-        date_obj = parse_date(date_str)
-        if not date_obj:
+        if not location_id or not date_from_str or not date_to_str:
+            return Response({"detail": "location_id, date_from i date_to su obavezni"}, status=400)
+
+        date_from = parse_date(date_from_str)
+        date_to = parse_date(date_to_str)
+        if not date_from or not date_to:
             return Response({"detail": "Nevalidan format datuma"}, status=400)
+        if date_from > date_to:
+            return Response({"detail": "date_from ne može biti posle date_to"}, status=400)
 
-        # Dobavi radno vreme lokacije za taj dan
-        day_of_week = date_obj.weekday()  # 0 = ponedeljak
-        try:
-            working_hours = LocationWorkingHours.objects.get(location_id=location_id, day_of_week=day_of_week)
-        except LocationWorkingHours.DoesNotExist:
-            return Response({"detail": "Nema radnog vremena za taj dan"}, status=404)
+        result = []
 
-        # Dobavi rezervacije za lokaciju i datum
-        bookings = Bookings.objects.filter(
-            location_id=location_id,
-            booking_date=date_obj,
-            status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN]
-        )
+        current_date = date_from
+        while current_date <= date_to:
+            day_of_week = current_date.weekday()  # 0 = ponedeljak
+            try:
+                working_hours = LocationWorkingHours.objects.get(location__public_id=location_id, day_of_week=day_of_week)
+            except LocationWorkingHours.DoesNotExist:
+                # Ako nema radnog vremena za dan, preskoči
+                current_date += timedelta(days=1)
+                continue
 
-        # Izračunaj slobodne slotove (ovo može da bude zasebna funkcija)
-        slots = calculate_available_slots(working_hours, bookings)
+            bookings = Bookings.objects.filter(
+                location__public_id=location_id,
+                booking_date=current_date,
+                status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN]
+            )
 
-        return Response(slots)
+            slots = calculate_available_slots(working_hours, bookings)
+            result.append({
+                "date": current_date.isoformat(),
+                "slots": slots
+            })
+
+            current_date += timedelta(days=1)
+
+        return Response(result)
     
-def calculate_available_slots(working_hours, bookings, date_obj):
-    start_minutes = working_hours.location_opening_time.hour * 60 + working_hours.location_opening_time.minute
-    end_minutes = working_hours.location_closing_time.hour * 60 + working_hours.location_closing_time.minute
-    duration = working_hours.event_duration * 60  # u minutima
-    pause = working_hours.location_brake_duration or 30
 
-    slots = []
-    t = start_minutes
-    while t + duration <= end_minutes:
-        slot_start_time = time(hour=t // 60, minute=t % 60)
-        slot_start_dt = datetime.combine(date_obj, slot_start_time)
-        slot_end_dt = slot_start_dt + timedelta(minutes=duration)
-
-        is_taken = False
-        for booking in bookings:
-            if booking.booking_start_time < slot_end_dt and booking.booking_end_time > slot_start_dt:
-                is_taken = True
-                break
-
-        slots.append({
-            "start": slot_start_dt.isoformat(),
-            "end": slot_end_dt.isoformat(),
-            "taken": is_taken
-        })
-
-        t += duration + pause
-
-    return slots
 
