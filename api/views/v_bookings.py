@@ -9,11 +9,11 @@ from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from reservations.filters import BookingFilter
 from django.utils.timezone import now
-from django.db.models import Func,F, ExpressionWrapper, DateTimeField
+from django.db.models import Func,F, ExpressionWrapper, DateTimeField, Q
 from django.db.models.functions import Cast
 from reservations.models import BookingStatus
 from django.utils.timezone import make_aware
-from django.db.models import Q
+from django.utils.dateparse import parse_date
 
 # ---------------------------------------------------------------------
 # Bookings Permissions
@@ -92,6 +92,46 @@ class BookingsViewSet(viewsets.ModelViewSet):
             status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN, BookingStatus.ODBIJEN]
         ).count()
         return Response({'count': count})
+    
+    @action(detail=False, methods=["get"], url_path="my-all", permission_classes=[IsAuthenticated])
+    def my_all_bookings(self, request):
+        user = request.user
+
+        if not hasattr(user, "customer"):
+            return Response([], status=200)
+
+        # Osnovni queryset: samo rezervacije koje pripadaju customeru korisnika
+        queryset = self.get_queryset().filter(location__customer=user.customer)
+
+        # Query parametri
+        status = request.query_params.get("status")
+        year = request.query_params.get("year")
+        month = request.query_params.get("month")
+        after = request.query_params.get("after")
+        before = request.query_params.get("before")
+
+        if status:
+            queryset = queryset.filter(status=status)
+
+        if year and year.isdigit():
+            queryset = queryset.filter(start_time__year=int(year))
+
+        if month and month.isdigit():
+            queryset = queryset.filter(start_time__month=int(month))
+
+        if after:
+            after_date = parse_date(after)
+            if after_date:
+                queryset = queryset.filter(start_time__date__gte=after_date)
+
+        if before:
+            before_date = parse_date(before)
+            if before_date:
+                queryset = queryset.filter(start_time__date__lte=before_date)
+
+        # Vraćamo sve bez paginacije jer se koristi za prikaz u kalendaru
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
     # ---------------------------------------------------------------------
     # Endpoint za preuzimanje svih aktivnih rezervacija
     # ---------------------------------------------------------------------
