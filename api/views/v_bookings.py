@@ -5,7 +5,7 @@ from api.serializers.s_bookings import BookingsSerializer
 from notifications.utils import create_notification
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.utils import timezone
 from reservations.filters import BookingFilter
 from django.utils.timezone import now
@@ -132,6 +132,30 @@ class BookingsViewSet(viewsets.ModelViewSet):
         # Vraćamo sve bez paginacije jer se koristi za prikaz u kalendaru
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+    # ---------------------------------------------------------------------
+    # Endpoint za preuzimanje rezervacija po lokaciji
+    # ---------------------------------------------------------------------
+    @action(detail=False, methods=['get'], url_path='location-bookings', permission_classes=[AllowAny])
+    def location_bookings(self, request):
+        location_id = request.query_params.get('location_id')
+        if not location_id:
+            return Response({'detail': 'location_id is required'}, status=400)
+
+        # Uzimamo samo rezervacije koje nisu otkazane
+        bookings = Bookings.objects.filter(
+            location_id=location_id,
+            status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN]
+        ).only('booking_start_time', 'booking_end_time')
+
+        # Vraćamo samo potrebna polja za frontend
+        data = [
+            {
+                'start': b.booking_start_time.isoformat(),
+                'end': b.booking_end_time.isoformat()
+            }
+            for b in bookings
+        ]
+        return Response(data)
     # ---------------------------------------------------------------------
     # Endpoint za preuzimanje svih aktivnih rezervacija
     # ---------------------------------------------------------------------
