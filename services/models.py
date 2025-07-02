@@ -20,7 +20,7 @@ class CustomerServices(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     service_name = models.CharField(max_length=255)
     service_type = models.CharField(max_length=50, choices=ServiceType.choices)
-    duration = models.CharField(max_length=255)
+    duration = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     price_per_child = models.DecimalField(max_digits=5, decimal_places=2)
     min_quantity = models.IntegerField(default=0)

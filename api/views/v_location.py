@@ -5,6 +5,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from playrooms.models import Customer, Location, LocationImages, LocationWorkingHours
 from api.serializers.s_location import LocationSerializer, LocationImagesSerializer, LocationWorkingHoursSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework.response import Response
 # ---------------------------------------------------------------------
 # Location ViewSet
 # ---------------------------------------------------------------------
@@ -19,7 +21,16 @@ class LocationViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Location.objects.all()
+    # partner da vidi samo svoje lokacije, takodje za partnere u response da se vracaju svi bookingsi bez paginacije, dodati polje start date i end date za filtere
     
+    @action(detail=False, methods=["get"], url_path="my", permission_classes=[IsAuthenticated])
+    def my_locations(self, request):
+        user = request.user
+        if hasattr(user, "customer"):
+            queryset = Location.objects.filter(customer=user.customer)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        return Response([], status=200)
     # -------------------------------------------------
     # Ova funkcija perform_update se poziva kada se kreira nova lokacija.
     # Kada frontend pošalje POST request za kreiranje lokacije, NE šalje customer.
