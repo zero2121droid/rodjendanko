@@ -1,5 +1,7 @@
+from datetime import date, datetime, time, timedelta
 from rest_framework import viewsets, filters, permissions
 from django_filters.rest_framework import DjangoFilterBackend
+from playrooms.models import LocationWorkingHours
 from reservations.models import Bookings
 from api.serializers.s_bookings import BookingsSerializer
 from notifications.utils import create_notification
@@ -48,7 +50,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
     lookup_field = 'public_id'
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["customer__name", "location__location_name", "customer_services__service_name", "booking_date"]
-    filterset_fields = ['customer', 'location', 'booking_date', 'status']
+    filterset_fields = ['customer', 'location', 'booking_date', 'status', 'children_count']
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
 
@@ -201,3 +203,67 @@ class BookingsViewSet(viewsets.ModelViewSet):
         booking.save()
 
         return Response({"detail": "Rezervacija je uspešno otkazana."}, status=200)
+    
+    # ---------------------------------------------------------------------
+    # Endpoint za preuzimanje slobodnih slotova
+    # ---------------------------------------------------------------------
+
+    @action(detail=False, methods=['get'], url_path='available-slots')
+    def available_slots(self, request):
+        location_id = request.query_params.get('location_id')
+        date_str = request.query_params.get('date')
+        if not location_id or not date_str:
+            return Response({"detail": "location_id i date su obavezni"}, status=400)
+
+        date_obj = parse_date(date_str)
+        if not date_obj:
+            return Response({"detail": "Nevalidan format datuma"}, status=400)
+
+        # Dobavi radno vreme lokacije za taj dan
+        day_of_week = date_obj.weekday()  # 0 = ponedeljak
+        try:
+            working_hours = LocationWorkingHours.objects.get(location_id=location_id, day_of_week=day_of_week)
+        except LocationWorkingHours.DoesNotExist:
+            return Response({"detail": "Nema radnog vremena za taj dan"}, status=404)
+
+        # Dobavi rezervacije za lokaciju i datum
+        bookings = Bookings.objects.filter(
+            location_id=location_id,
+            booking_date=date_obj,
+            status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN]
+        )
+
+        # Izračunaj slobodne slotove (ovo može da bude zasebna funkcija)
+        slots = calculate_available_slots(working_hours, bookings)
+
+        return Response(slots)
+    
+def calculate_available_slots(working_hours, bookings, date_obj):
+    start_minutes = working_hours.location_opening_time.hour * 60 + working_hours.location_opening_time.minute
+    end_minutes = working_hours.location_closing_time.hour * 60 + working_hours.location_closing_time.minute
+    duration = working_hours.event_duration * 60  # u minutima
+    pause = working_hours.location_brake_duration or 30
+
+    slots = []
+    t = start_minutes
+    while t + duration <= end_minutes:
+        slot_start_time = time(hour=t // 60, minute=t % 60)
+        slot_start_dt = datetime.combine(date_obj, slot_start_time)
+        slot_end_dt = slot_start_dt + timedelta(minutes=duration)
+
+        is_taken = False
+        for booking in bookings:
+            if booking.booking_start_time < slot_end_dt and booking.booking_end_time > slot_start_dt:
+                is_taken = True
+                break
+
+        slots.append({
+            "start": slot_start_dt.isoformat(),
+            "end": slot_end_dt.isoformat(),
+            "taken": is_taken
+        })
+
+        t += duration + pause
+
+    return slots
+
