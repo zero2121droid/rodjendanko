@@ -1,7 +1,7 @@
 from datetime import date, datetime, time, timedelta
 from rest_framework import viewsets, filters, permissions
 from django_filters.rest_framework import DjangoFilterBackend
-from playrooms.models import LocationWorkingHours
+from playrooms.models import Customer, LocationWorkingHours
 from reservations.models import Bookings
 from api.serializers.s_bookings import BookingsSerializer
 from notifications.utils import create_notification
@@ -130,13 +130,18 @@ class BookingsViewSet(viewsets.ModelViewSet):
     def my_all_bookings(self, request):
         user = request.user
 
-        if not hasattr(user, "customer") and not hasattr(user, "partner"):
+        if user.user_type == 'partner':
+            # Partner vidi rezervacije za lokacije koje pripadaju Customer-u gde je on owner
+            customers = Customer.objects.filter(owner=user)
+            queryset = self.get_queryset().filter(location__customer__in=customers)
+        elif user.user_type == 'customer':
+            # Customer vidi rezervacije samo za svoje lokacije
+            queryset = self.get_queryset().filter(location__customer=user.customer)
+        else:
+            # Ostali tipovi ne vide rezervacije
             return Response([], status=200)
 
-        # Osnovni queryset: samo rezervacije koje pripadaju customeru korisnika
-        queryset = self.get_queryset().filter(location__customer=user.customer)
-
-        # Query parametri
+        # Filteri iz query params (status, year, month, after, before)
         status = request.query_params.get("status")
         year = request.query_params.get("year")
         month = request.query_params.get("month")
@@ -162,7 +167,6 @@ class BookingsViewSet(viewsets.ModelViewSet):
             if before_date:
                 queryset = queryset.filter(start_time__date__lte=before_date)
 
-        # Vraćamo sve bez paginacije jer se koristi za prikaz u kalendaru
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     # ---------------------------------------------------------------------
