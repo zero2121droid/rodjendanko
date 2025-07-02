@@ -130,7 +130,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
     def my_all_bookings(self, request):
         user = request.user
 
-        if not hasattr(user, "customer"):
+        if not hasattr(user, "customer") and not hasattr(user, "partner"):
             return Response([], status=200)
 
         # Osnovni queryset: samo rezervacije koje pripadaju customeru korisnika

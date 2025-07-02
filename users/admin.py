@@ -10,13 +10,17 @@ class UserAdmin(BaseUserAdmin):
         return wallet.coins_balance if wallet else 0
     get_coins.short_description = 'Coins'
 
-    list_display = ('id', 'public_id', 'first_name', 'last_name','email', 'phone', 'get_coins', 'created_at')
+    def get_user_type(self, obj):
+        return obj.get_user_type_display() if obj.user_type else 'N/A'
+    get_user_type.short_description = 'User Type'
+
+    list_display = ('id', 'public_id', 'first_name', 'last_name','get_user_type','email', 'phone', 'get_coins', 'created_at')
     search_fields = ('username', 'first_name', 'last_name','email', 'public_id')
     ordering = ('-created_at',)
     
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        (_("Personal info"), {"fields": ("first_name", "last_name", "phone")}),
+        (_("Personal info"), {"fields": ("first_name", "last_name", "phone", "user_type")}),
         (_("Permissions"), {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
         (_("Important dates"), {"fields": ("last_login",)}),
     )
