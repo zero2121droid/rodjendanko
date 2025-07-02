@@ -1,10 +1,12 @@
 from decimal import Decimal
 from rest_framework import serializers
-from reservations.models import Bookings
+from reservations.models import Bookings, BookingStatus
 from services.models import CustomerServices
 from users.models import Children
 from datetime import date
 from reservations.models import Rating
+from rest_framework.exceptions import ValidationError
+
 
 # ---------------------------------------------------------------------
 # Bookings Serializer
@@ -67,6 +69,34 @@ class BookingsSerializer(serializers.ModelSerializer):
         booking.customer_services.set(services)
 
         return booking
+    
+    
+    def validate(self, data):
+        # Ako je update, proveri da li menjamo vreme
+        instance = getattr(self, 'instance', None)
+
+        start_time = data.get('booking_start_time', getattr(instance, 'booking_start_time', None))
+        end_time = data.get('booking_end_time', getattr(instance, 'booking_end_time', None))
+        location = data.get('location', getattr(instance, 'location', None))
+
+        if not (start_time and end_time and location):
+            return data  # preskoči ako podaci nisu svi prisutni
+
+        overlapping = Bookings.objects.filter(
+            location=location,
+            booking_start_time__lt=end_time,
+            booking_end_time__gt=start_time,
+            status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN]
+        )
+
+        # Ako je update, isključi sebe
+        if instance:
+            overlapping = overlapping.exclude(pk=instance.pk)
+
+        if overlapping.exists():
+            raise ValidationError("Izabrani termin je već rezervisan.")
+        
+        return data
     
     def get_service_name(self, obj):
         # Ako ima više usluga, prikazati ih spojene zarezom
