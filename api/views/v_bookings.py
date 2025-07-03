@@ -152,20 +152,20 @@ class BookingsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(status=status)
 
         if year and year.isdigit():
-            queryset = queryset.filter(start_time__year=int(year))
+            queryset = queryset.filter(booking_start_time__year=int(year))
 
         if month and month.isdigit():
-            queryset = queryset.filter(start_time__month=int(month))
+            queryset = queryset.filter(booking_start_time__month=int(month))
 
         if after:
             after_date = parse_date(after)
             if after_date:
-                queryset = queryset.filter(start_time__date__gte=after_date)
+                queryset = queryset.filter(booking_start_time__date__gte=after_date)
 
         if before:
             before_date = parse_date(before)
             if before_date:
-                queryset = queryset.filter(start_time__date__lte=before_date)
+                queryset = queryset.filter(booking_start_time__date__lte=before_date)
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
