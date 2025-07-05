@@ -45,7 +45,8 @@ class IsBookingOwnerOrCustomerOrAdmin(permissions.BasePermission):
 def calculate_available_slots(working_hours, bookings, date_obj):
     start_minutes = working_hours.location_opening_time.hour * 60 + working_hours.location_opening_time.minute
     end_minutes = working_hours.location_closing_time.hour * 60 + working_hours.location_closing_time.minute
-    duration = working_hours.event_duration * 60  # u minutima
+    event_duration = working_hours.event_duration if working_hours.event_duration else 1
+    duration = event_duration * 60
     pause = working_hours.location_brake_duration or 30
 
     slots = []
