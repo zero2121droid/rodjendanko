@@ -243,7 +243,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
     # Endpoint za preuzimanje slobodnih slotova
     # ---------------------------------------------------------------------
 
-    @action(detail=False, methods=['get'], url_path='available-slots')
+    @action(detail=False, methods=['get'], url_path='available-slots', permission_classes=[])
     def available_slots(self, request):
         location_id = request.query_params.get('location_id')
         date_from_str = request.query_params.get('date_from')
