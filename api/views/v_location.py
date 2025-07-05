@@ -16,12 +16,17 @@ class LocationViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["location_name", "location_address", "description"]
     filterset_fields = ["customer"]  # primer za precizno filtriranje
-    ordering_fields = ["created_at", "updates_at"]
+    ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
 
     def get_queryset(self):
         return Location.objects.all()
     # partner da vidi samo svoje lokacije, takodje za partnere u response da se vracaju svi bookingsi bez paginacije, dodati polje start date i end date za filtere
+    
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [AllowAny()]
+        return super().get_permissions()
     
     @action(detail=False, methods=["get"], url_path="my", permission_classes=[IsAuthenticated])
     def my_locations(self, request):
