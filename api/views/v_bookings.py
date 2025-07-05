@@ -285,7 +285,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
                     status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN]
                 )
 
-                slots = calculate_available_slots(working_hours, bookings)
+                slots = calculate_available_slots(working_hours, bookings, current_date)
 
                 result.append({
                     "location_id": str(location.id),
