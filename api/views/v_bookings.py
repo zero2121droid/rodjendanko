@@ -10,11 +10,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.utils import timezone
 from reservations.filters import BookingFilter
-from django.utils.timezone import now
+from django.utils.timezone import now, is_naive, make_aware
 from django.db.models import Func,F, ExpressionWrapper, DateTimeField, Q
 from django.db.models.functions import Cast
 from reservations.models import BookingStatus
-from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_date
 
 # ---------------------------------------------------------------------
@@ -55,6 +54,11 @@ def calculate_available_slots(working_hours, bookings, date_obj):
         slot_start_time = time(hour=t // 60, minute=t % 60)
         slot_start_dt = datetime.combine(date_obj, slot_start_time)
         slot_end_dt = slot_start_dt + timedelta(minutes=duration)
+
+        if is_naive(slot_start_dt):
+            slot_start_dt = make_aware(slot_start_dt)
+        if is_naive(slot_end_dt):
+            slot_end_dt = make_aware(slot_end_dt)
 
         is_taken = False
         for booking in bookings:
