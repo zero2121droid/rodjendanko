@@ -1,7 +1,7 @@
 from datetime import date, datetime, time, timedelta
 from rest_framework import viewsets, filters, permissions
 from django_filters.rest_framework import DjangoFilterBackend
-from playrooms.models import Customer, LocationWorkingHours
+from playrooms.models import Customer, Location, LocationWorkingHours
 from reservations.models import Bookings
 from api.serializers.s_bookings import BookingsSerializer
 from notifications.utils import create_notification
@@ -249,8 +249,8 @@ class BookingsViewSet(viewsets.ModelViewSet):
         date_from_str = request.query_params.get('date_from')
         date_to_str = request.query_params.get('date_to')
 
-        if not location_id or not date_from_str or not date_to_str:
-            return Response({"detail": "location_id, date_from i date_to su obavezni"}, status=400)
+        if not date_from_str or not date_to_str:
+            return Response({"detail": "date_from i date_to su obavezni"}, status=400)
 
         date_from = parse_date(date_from_str)
         date_to = parse_date(date_to_str)
@@ -259,33 +259,46 @@ class BookingsViewSet(viewsets.ModelViewSet):
         if date_from > date_to:
             return Response({"detail": "date_from ne može biti posle date_to"}, status=400)
 
+        # Ako je prosleđen location_id, filtriramo samo jednu lokaciju
+        if location_id:
+            locations = Location.objects.filter(public_id=location_id)
+        else:
+            # Inače uzimamo sve lokacije koje imaju definisano radno vreme
+            locations = Location.objects.filter(locationworkinghours__isnull=False).distinct()
+
         result = []
 
-        current_date = date_from
-        while current_date <= date_to:
-            day_of_week = current_date.weekday()  # 0 = ponedeljak
-            try:
-                working_hours = LocationWorkingHours.objects.get(location__public_id=location_id, day_of_week=day_of_week)
-            except LocationWorkingHours.DoesNotExist:
-                # Ako nema radnog vremena za dan, preskoči
+        for location in locations:
+            current_date = date_from
+            while current_date <= date_to:
+                day_of_week = current_date.weekday()
+
+                try:
+                    working_hours = LocationWorkingHours.objects.get(location=location, day_of_week=day_of_week)
+                except LocationWorkingHours.DoesNotExist:
+                    current_date += timedelta(days=1)
+                    continue
+
+                bookings = Bookings.objects.filter(
+                    location=location,
+                    booking_date=current_date,
+                    status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN]
+                )
+
+                slots = calculate_available_slots(working_hours, bookings)
+
+                result.append({
+                    "location_id": str(location.id),
+                    "location_name": location.location_name,
+                    "location_city": location.location_city,
+                    "date": current_date.isoformat(),
+                    "slots": slots
+                })
+
                 current_date += timedelta(days=1)
-                continue
-
-            bookings = Bookings.objects.filter(
-                location__public_id=location_id,
-                booking_date=current_date,
-                status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN]
-            )
-
-            slots = calculate_available_slots(working_hours, bookings)
-            result.append({
-                "date": current_date.isoformat(),
-                "slots": slots
-            })
-
-            current_date += timedelta(days=1)
 
         return Response(result)
+
     
 
 
