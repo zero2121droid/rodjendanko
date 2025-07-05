@@ -26,13 +26,18 @@ class LocationViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["get"], url_path="my", permission_classes=[IsAuthenticated])
     def my_locations(self, request):
         user = request.user
+
         if user.user_type == 'partner':
             customers = Customer.objects.filter(owner=user)
             queryset = Location.objects.filter(customer__in=customers)
-        if hasattr(user, "customer"):
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+
+        elif hasattr(user, "customer"):
             queryset = Location.objects.filter(customer=user.customer)
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)
+
         return Response([], status=200)
     # -------------------------------------------------
     # Ova funkcija perform_update se poziva kada se kreira nova lokacija.
