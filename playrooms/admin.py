@@ -19,9 +19,9 @@ class LocationAdmin(admin.ModelAdmin):
 
 @admin.register(LocationImages)
 class LocationImagesAdmin(admin.ModelAdmin):
-    list_display = ("location", "location_image_url", "upload_date")
+    list_display = ("location", "upload_date")
     list_filter = ("location",)
-    search_fields = ("location__location_name", "location_image_url")
+    search_fields = ("location__location_name",)
     ordering = ["-created_at"]
 
 @admin.register(LocationWorkingHours)

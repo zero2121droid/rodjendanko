@@ -15,10 +15,16 @@ class LocationSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'public_id']
 
 class LocationImagesSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
     class Meta:
         model = LocationImages
         fields = "__all__"
         read_only_fields = ['id', 'upload_date', 'created_at', 'updated_at']
+
+    def get_image_url(self, obj):
+        if obj.location_image:
+            return obj.location_image.url
+        return None
 
 class LocationWorkingHoursSerializer(serializers.ModelSerializer):
     class Meta:

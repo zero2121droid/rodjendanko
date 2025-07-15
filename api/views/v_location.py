@@ -7,6 +7,8 @@ from api.serializers.s_location import LocationSerializer, LocationImagesSeriali
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.parsers import MultiPartParser, FormParser
 # ---------------------------------------------------------------------
 # Location ViewSet
 # ---------------------------------------------------------------------
@@ -66,10 +68,11 @@ class LocationImagesViewSet(viewsets.ModelViewSet):
     serializer_class = LocationImagesSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["location_image_url", "description"]
+    search_fields = ["description"]
     filterset_fields = ["location"]  # primer za precizno filtriranje
     ordering_fields = ["upload_date", "created_at", "updated_at"]
     ordering = ["upload_date"]  # defaultno sortiranje po upload_date
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_queryset(self):
         user = self.request.user
@@ -87,8 +90,54 @@ class LocationImagesViewSet(viewsets.ModelViewSet):
             location = Location.objects.get(id=location_id, customer__user=user)
         except Location.DoesNotExist:
             raise ValidationError("Location not found or you don't have permission.")
+        
+        if LocationImages.objects.filter(location=location).count() >= 10:
+            raise ValidationError("Dozvoljeno je maksimalno 10 slika po lokaciji.")
+        if serializer.validated_data.get('is_main'):
+            LocationImages.objects.filter(location=location, is_main=True).update(is_main=False)
 
         serializer.save(location=location)
+    
+    @action(detail=False, methods=['get'], url_path='remaining-image-slots', permission_classes=[IsAuthenticated])
+    def remaining_image_slots(self, request):
+        location_id = request.query_params.get("location")
+        if not location_id:
+            return Response({"detail": "location param is required."}, status=400)
+        
+        try:
+            location = Location.objects.get(id=location_id, customer__user=request.user)
+        except Location.DoesNotExist:
+            return Response({"detail": "Location not found or no access."}, status=403)
+        
+        used = LocationImages.objects.filter(location=location).count()
+        remaining = max(0, 10 - used)
+        return Response({"remaining_slots": remaining})
+    
+    @action(detail=True, methods=["post"], url_path="set-main")
+    def set_main_image(self, request, pk=None):
+        image = self.get_object()
+        user = request.user
+
+        if image.location.customer.user != user and not user.is_superuser:
+            raise PermissionDenied("Nemate dozvolu da menjate ovu sliku.")
+
+        # Resetujemo sve druge slike
+        LocationImages.objects.filter(location=image.location).update(is_main=False)
+
+        image.is_main = True
+        image.save()
+
+        return Response({"detail": "Slika je postavljena kao glavna."})
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        user = request.user
+
+        if instance.location.customer.user != user and not user.is_superuser:
+            raise PermissionDenied("Nemate dozvolu da obrišete ovu sliku.")
+
+        return super().destroy(request, *args, **kwargs)
+
 # ---------------------------------------------------------------------
 # Location Working Hours ViewSet
 # ---------------------------------------------------------------------

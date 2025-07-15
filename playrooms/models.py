@@ -81,8 +81,8 @@ class Location(models.Model):
 class LocationImages(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    location_image_url = models.TextField(null=True, blank=True)
     location_image = models.ImageField(upload_to='location_images/', null=True, blank=True, validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])])
+    is_main = models.BooleanField(default=False)
     upload_date = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
