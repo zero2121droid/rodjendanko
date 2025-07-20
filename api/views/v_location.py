@@ -121,7 +121,6 @@ class LocationImagesViewSet(viewsets.ModelViewSet):
         if image.location.customer.user != user and not user.is_superuser:
             raise PermissionDenied("Nemate dozvolu da menjate ovu sliku.")
 
-        # Resetujemo sve druge slike
         LocationImages.objects.filter(location=image.location).update(is_main=False)
 
         image.is_main = True
