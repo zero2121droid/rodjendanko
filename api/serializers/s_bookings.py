@@ -6,6 +6,7 @@ from users.models import Children
 from datetime import date
 from reservations.models import Rating
 from rest_framework.exceptions import ValidationError
+from django.utils.timezone import is_naive, make_aware
 
 
 # ---------------------------------------------------------------------
@@ -55,24 +56,41 @@ class BookingsSerializer(serializers.ModelSerializer):
         services = validated_data.pop('customer_services', [])
         children_count = validated_data.get('children_count')
 
-        # Izračunaj cenu ako je moguće
+        booking_start_time = validated_data.get('booking_start_time')
+        booking_end_time = validated_data.get('booking_end_time')
+        
+        if booking_start_time and is_naive(booking_start_time):
+            validated_data['booking_start_time'] = make_aware(booking_start_time)
+            
+        if booking_end_time and is_naive(booking_end_time):
+            validated_data['booking_end_time'] = make_aware(booking_end_time)
+
         if children_count is not None and services:
             total_price_per_child = sum(
                 service.price_per_child for service in services if service.price_per_child is not None
             )
             validated_data['booking_price'] = Decimal(children_count) * total_price_per_child
 
-        # Kreiraj instancu Bookings bez M2M
         booking = Bookings.objects.create(**validated_data)
 
-        # Dodeli M2M relaciju (nakon što instanca postoji)
         booking.customer_services.set(services)
 
         return booking
     
+    def update(self, instance, validated_data):
+        booking_start_time = validated_data.get('booking_start_time')
+        booking_end_time = validated_data.get('booking_end_time')
+        
+        if booking_start_time and is_naive(booking_start_time):
+            validated_data['booking_start_time'] = make_aware(booking_start_time)
+            
+        if booking_end_time and is_naive(booking_end_time):
+            validated_data['booking_end_time'] = make_aware(booking_end_time)
+        
+        return super().update(instance, validated_data)
+    
     
     def validate(self, data):
-        # Ako je update, proveri da li menjamo vreme
         instance = getattr(self, 'instance', None)
 
         start_time = data.get('booking_start_time', getattr(instance, 'booking_start_time', None))
@@ -80,7 +98,7 @@ class BookingsSerializer(serializers.ModelSerializer):
         location = data.get('location', getattr(instance, 'location', None))
 
         if not (start_time and end_time and location):
-            return data  # preskoči ako podaci nisu svi prisutni
+            return data  
 
         overlapping = Bookings.objects.filter(
             location=location,
@@ -89,7 +107,6 @@ class BookingsSerializer(serializers.ModelSerializer):
             status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN]
         )
 
-        # Ako je update, isključi sebe
         if instance:
             overlapping = overlapping.exclude(pk=instance.pk)
 
@@ -99,7 +116,6 @@ class BookingsSerializer(serializers.ModelSerializer):
         return data
     
     def get_service_name(self, obj):
-        # Ako ima više usluga, prikazati ih spojene zarezom
         services = obj.customer_services.all()
         return ", ".join(service.service_name for service in services)
 

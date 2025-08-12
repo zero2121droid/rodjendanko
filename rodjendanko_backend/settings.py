@@ -150,7 +150,9 @@ REST_USE_JWT = True
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# Možda je bolje koristiti lokalnu timezone umesto UTC
+# TIME_ZONE = 'UTC'  # Staro
+TIME_ZONE = 'Europe/Belgrade'  # Dodato za bolje lokalno vreme
 
 USE_I18N = True
 
@@ -190,7 +192,15 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     #'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'DEFAULT_PAGINATION_CLASS': 'api.pagination.CustomPageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10,
+    # Dodano za bolje rukovanje datumom/vremenom
+    'DATETIME_FORMAT': '%Y-%m-%dT%H:%M:%S%z',
+    'DATETIME_INPUT_FORMATS': [
+        '%Y-%m-%dT%H:%M:%S%z',  # Sa timezone
+        '%Y-%m-%dT%H:%M:%S.%f%z',  # Sa mikrosekundama i timezone
+        '%Y-%m-%dT%H:%M:%SZ',  # UTC format
+        '%Y-%m-%dT%H:%M:%S',  # Bez timezone (kao fallback)
+    ]
 }
 
 CSRF_TRUSTED_ORIGINS = [

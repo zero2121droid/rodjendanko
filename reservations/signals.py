@@ -28,17 +28,15 @@ def send_booking_confirmation_notification(sender, instance, created, **kwargs):
 @receiver(pre_save, sender=Bookings)
 def set_validation_date_on_status_change(sender, instance, **kwargs):
     if instance.booking_start_time:
-        instance.booking_date = instance.booking_start_time.replace(
-            hour=0, minute=0, second=0, microsecond=0
-    )
-    # Proveri da li objekat već postoji u bazi (tj. da li je to nova instanca)
+        booking_date = instance.booking_start_time.date()
+        instance.booking_date = timezone.make_aware(
+            datetime.combine(booking_date, datetime.min.time())
+        )
     if instance.pk:
         try:
             previous = Bookings.objects.get(pk=instance.pk)
-            # Provera da li je status promenjen
             if previous.status != instance.status:
                 if instance.status in [BookingStatus.PRIHVACEN, BookingStatus.ODBIJEN]:
                     instance.booking_validation_date = timezone.now()
         except Bookings.DoesNotExist:
-            # Ako objekat ne postoji, znači da je ovo nova rezervacija, pa ništa ne treba da se menja
             pass

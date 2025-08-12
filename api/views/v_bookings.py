@@ -55,14 +55,20 @@ def calculate_available_slots(working_hours, bookings, date_obj):
         slot_start_dt = datetime.combine(date_obj, slot_start_time)
         slot_end_dt = slot_start_dt + timedelta(minutes=duration)
 
-        if is_naive(slot_start_dt):
-            slot_start_dt = make_aware(slot_start_dt)
-        if is_naive(slot_end_dt):
-            slot_end_dt = make_aware(slot_end_dt)
+        slot_start_dt = make_aware(slot_start_dt) if is_naive(slot_start_dt) else slot_start_dt
+        slot_end_dt = make_aware(slot_end_dt) if is_naive(slot_end_dt) else slot_end_dt
 
         is_taken = False
         for booking in bookings:
-            if booking.booking_start_time < slot_end_dt and booking.booking_end_time > slot_start_dt:
+            booking_start = booking.booking_start_time
+            booking_end = booking.booking_end_time
+            
+            if is_naive(booking_start):
+                booking_start = make_aware(booking_start)
+            if is_naive(booking_end):
+                booking_end = make_aware(booking_end)
+                
+            if booking_start < slot_end_dt and booking_end > slot_start_dt:
                 is_taken = True
                 break
 
@@ -136,17 +142,13 @@ class BookingsViewSet(viewsets.ModelViewSet):
         user = request.user
 
         if user.user_type == 'partner':
-            # Partner vidi rezervacije za lokacije koje pripadaju Customer-u gde je on owner
             customers = Customer.objects.filter(owner=user)
             queryset = self.get_queryset().filter(location__customer__in=customers)
         elif user.user_type == 'customer':
-            # Customer vidi rezervacije samo za svoje lokacije
             queryset = self.get_queryset().filter(location__customer=user.customer)
         else:
-            # Ostali tipovi ne vide rezervacije
             return Response([], status=200)
 
-        # Filteri iz query params (status, year, month, after, before)
         status = request.query_params.get("status")
         year = request.query_params.get("year")
         month = request.query_params.get("month")
@@ -183,19 +185,17 @@ class BookingsViewSet(viewsets.ModelViewSet):
         if not location_id:
             return Response({'detail': 'location_id is required'}, status=400)
 
-        # Uzimamo samo rezervacije koje nisu otkazane
         bookings = Bookings.objects.filter(
             location__public_id=location_id,
             status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN]
         )
 
-        # Vraćamo samo potrebna polja za frontend
         data = [
             {
-                'start': b.booking_start_time.isoformat(),
-                'end': b.booking_end_time.isoformat()
+                'start': b.booking_start_time.isoformat() if b.booking_start_time else None,
+                'end': b.booking_end_time.isoformat() if b.booking_end_time else None
             }
-            for b in bookings
+            for b in bookings if b.booking_start_time and b.booking_end_time
         ]
         return Response(data)
     # ---------------------------------------------------------------------
@@ -224,11 +224,9 @@ class BookingsViewSet(viewsets.ModelViewSet):
     def cancel(self, request, public_id=None):
         booking = self.get_object()
 
-        # Provera statusa
         if booking.status != BookingStatus.NA_CEKANJU:
             return Response({"detail": "Rezervaciju nije moguće otkazati."}, status=400)
 
-        # Provera datuma (7 dana ranije)
         from datetime import datetime, timedelta
 
         start_datetime = booking.booking_start_time
@@ -238,7 +236,6 @@ class BookingsViewSet(viewsets.ModelViewSet):
         if start_datetime - timezone.now() < timedelta(days=7):
             return Response({"detail": "Rezervaciju je moguće otkazati najkasnije 7 dana unapred."}, status=400)
 
-        # Otkazivanje
         booking.status = BookingStatus.OTKAZAN
         booking.save()
 
@@ -264,11 +261,9 @@ class BookingsViewSet(viewsets.ModelViewSet):
         if date_from > date_to:
             return Response({"detail": "date_from ne može biti posle date_to"}, status=400)
 
-        # Ako je prosleđen location_id, filtriramo samo jednu lokaciju
         if location_id:
             locations = Location.objects.filter(public_id=location_id)
         else:
-            # Inače uzimamo sve lokacije koje imaju definisano radno vreme
             locations = Location.objects.filter(locationworkinghours__isnull=False).distinct()
 
         result = []
@@ -284,9 +279,13 @@ class BookingsViewSet(viewsets.ModelViewSet):
                     current_date += timedelta(days=1)
                     continue
 
+                day_start = make_aware(datetime.combine(current_date, time.min))
+                day_end = make_aware(datetime.combine(current_date, time.max))
+                
                 bookings = Bookings.objects.filter(
                     location=location,
-                    booking_date=current_date,
+                    booking_start_time__gte=day_start,
+                    booking_start_time__lt=day_end,
                     status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN]
                 )
 
