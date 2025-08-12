@@ -46,6 +46,27 @@ class LocationViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
 
         return Response([], status=200)
+    
+    @action(detail=False, methods=["get"], url_path="search", permission_classes=[AllowAny])
+    def public_search(self, request):
+        """
+        Javna pretraga lokacija dostupna bez autentifikacije
+        """
+        queryset = Location.objects.all()
+        
+        # Dodaj filtriranje po gradu ako je prosleđeno
+        city = request.query_params.get('city')
+        if city:
+            queryset = queryset.filter(location_city__icontains=city)
+            
+        # Dodaj pretragu po imenu
+        search = request.query_params.get('search')
+        if search:
+            queryset = queryset.filter(location_name__icontains=search)
+            
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
     # -------------------------------------------------
     # Ova funkcija perform_update se poziva kada se kreira nova lokacija.
     # Kada frontend pošalje POST request za kreiranje lokacije, NE šalje customer.
@@ -149,6 +170,14 @@ class LocationWorkingHoursViewSet(viewsets.ModelViewSet):
     #filterset_fields = ["location"]  # primer za precizno filtriranje
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
+
+    def get_permissions(self):
+        """
+        Dozvoli javni pristup za čitanje radnog vremena (potrebno za pretragu)
+        """
+        if self.action in ['list', 'retrieve']:
+            return [AllowAny()]
+        return super().get_permissions()
 
     def get_queryset(self):
         location_param = self.request.query_params.get("location")

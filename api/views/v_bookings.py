@@ -96,6 +96,14 @@ class BookingsViewSet(viewsets.ModelViewSet):
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
 
+    def get_permissions(self):
+        """
+        Override permissions za specifične akcije
+        """
+        if self.action in ['available_slots', 'location_bookings']:
+            return [AllowAny()]
+        return super().get_permissions()
+
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
@@ -245,7 +253,7 @@ class BookingsViewSet(viewsets.ModelViewSet):
     # Endpoint za preuzimanje slobodnih slotova
     # ---------------------------------------------------------------------
 
-    @action(detail=False, methods=['get'], url_path='available-slots', permission_classes=[])
+    @action(detail=False, methods=['get'], url_path='available-slots', permission_classes=[AllowAny])
     def available_slots(self, request):
         location_id = request.query_params.get('location_id')
         date_from_str = request.query_params.get('date_from')
