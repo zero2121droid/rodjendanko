@@ -312,8 +312,10 @@ class BookingsViewSet(viewsets.ModelViewSet):
 
                 result.append({
                     "location_id": str(location.id),
+                    "location_public_id": location.public_id,
                     "location_name": location.location_name,
                     "location_city": location.location_city,
+                    "location_address": location.location_address,
                     "date": current_date.isoformat(),
                     "slots": slots
                 })
@@ -382,8 +384,10 @@ class PublicAvailableSlotsView(APIView):
 
                 result.append({
                     "location_id": str(location.id),
+                    "location_public_id": location.public_id,
                     "location_name": location.location_name,
                     "location_city": location.location_city,
+                    "location_address": location.location_address,
                     "date": current_date.isoformat(),
                     "slots": slots
                 })

@@ -95,8 +95,25 @@ class LocationImagesViewSet(viewsets.ModelViewSet):
     ordering = ["upload_date"]  # defaultno sortiranje po upload_date
     parser_classes = [MultiPartParser, FormParser]
 
+    def get_permissions(self):
+        """
+        Dozvoli javni pristup za čitanje slika (potrebno za javnu pretragu)
+        """
+        if self.action in ['list', 'retrieve']:
+            return [AllowAny()]
+        return super().get_permissions()
+
     def get_queryset(self):
         user = self.request.user
+        
+        # Za javne endpoint-ove prikaži sve slike
+        if self.action in ['list', 'retrieve']:
+            return LocationImages.objects.all()
+            
+        # Za ostale akcije, filtriraj po korisniku
+        if not user or user.is_anonymous:
+            return LocationImages.objects.none()
+            
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return LocationImages.objects.all()
         return LocationImages.objects.filter(location__customer__user=user) 
