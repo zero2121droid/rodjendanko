@@ -4,7 +4,7 @@ from api.views.v_user import UserViewSet, ChildrenViewSet
 from rest_framework.routers import DefaultRouter
 from api.views.v_customer import CustomerViewSet
 from api.views.v_services import CustomerServicesViewSet, PartnerServicesViewSet, OtherServicesViewSet, ServicesImagesViewSet
-from api.views.v_bookings import BookingsViewSet
+from api.views.v_bookings import BookingsViewSet, PublicAvailableSlotsView
 from api.views.v_location import LocationViewSet, LocationImagesViewSet, LocationWorkingHoursViewSet
 from api.views.v_notifications import NotificationViewSet
 from api.views.v_wallet import WalletViewSet, WalletTransactionViewSet
@@ -32,4 +32,5 @@ router.register(r'ratings', RatingViewSet, basename='ratings')
 
 urlpatterns = router.urls + [
     path('customer/register/', CustomerRegistrationView.as_view(), name='customer-register'),
+    path('public/available-slots/', PublicAvailableSlotsView.as_view(), name='public-available-slots'),
 ]

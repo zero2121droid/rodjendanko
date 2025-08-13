@@ -106,6 +106,15 @@ class BookingsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        
+        # Za javne endpoint-ove ne primenjuj filtriranje po korisniku
+        if self.action in ['available_slots', 'location_bookings']:
+            return Bookings.objects.all().order_by("created_at")
+            
+        # Za ostale endpoint-ove, proveri da li je korisnik autentifikovan
+        if not user or user.is_anonymous:
+            return Bookings.objects.none()
+            
         if user.groups.filter(name="AdminGroup").exists() or user.is_superuser:
             return Bookings.objects.all().order_by("created_at")
         if hasattr(user, 'customer_profile'):
@@ -187,7 +196,8 @@ class BookingsViewSet(viewsets.ModelViewSet):
     # ---------------------------------------------------------------------
     # Endpoint za preuzimanje rezervacija po lokaciji
     # ---------------------------------------------------------------------
-    @action(detail=False, methods=['get'], url_path='location-bookings', permission_classes=[AllowAny])
+    @action(detail=False, methods=['get'], url_path='location-bookings', 
+            permission_classes=[AllowAny], authentication_classes=[])
     def location_bookings(self, request):
         location_id = request.query_params.get('location_id')
         if not location_id:
@@ -253,7 +263,8 @@ class BookingsViewSet(viewsets.ModelViewSet):
     # Endpoint za preuzimanje slobodnih slotova
     # ---------------------------------------------------------------------
 
-    @action(detail=False, methods=['get'], url_path='available-slots', permission_classes=[AllowAny])
+    @action(detail=False, methods=['get'], url_path='available-slots', 
+            permission_classes=[AllowAny], authentication_classes=[])
     def available_slots(self, request):
         location_id = request.query_params.get('location_id')
         date_from_str = request.query_params.get('date_from')
@@ -311,6 +322,72 @@ class BookingsViewSet(viewsets.ModelViewSet):
 
         return Response(result)
 
+# ---------------------------------------------------------------------
+# Nezavisan view za javnu pretragu dostupnih slotova 
+# (backup ako ViewSet i dalje pravi problem)
+# ---------------------------------------------------------------------
+from rest_framework.views import APIView
+
+class PublicAvailableSlotsView(APIView):
+    """
+    Javni endpoint za pretragu dostupnih slotova bez autentifikacije
+    """
+    permission_classes = [AllowAny]
+    authentication_classes = []
     
+    def get(self, request):
+        location_id = request.query_params.get('location_id')
+        date_from_str = request.query_params.get('date_from')
+        date_to_str = request.query_params.get('date_to')
 
+        if not date_from_str or not date_to_str:
+            return Response({"detail": "date_from i date_to su obavezni"}, status=400)
 
+        date_from = parse_date(date_from_str)
+        date_to = parse_date(date_to_str)
+        if not date_from or not date_to:
+            return Response({"detail": "Nevalidan format datuma"}, status=400)
+        if date_from > date_to:
+            return Response({"detail": "date_from ne može biti posle date_to"}, status=400)
+
+        if location_id:
+            locations = Location.objects.filter(public_id=location_id)
+        else:
+            locations = Location.objects.filter(locationworkinghours__isnull=False).distinct()
+
+        result = []
+
+        for location in locations:
+            current_date = date_from
+            while current_date <= date_to:
+                day_of_week = current_date.weekday()
+
+                try:
+                    working_hours = LocationWorkingHours.objects.get(location=location, day_of_week=day_of_week)
+                except LocationWorkingHours.DoesNotExist:
+                    current_date += timedelta(days=1)
+                    continue
+
+                day_start = make_aware(datetime.combine(current_date, time.min))
+                day_end = make_aware(datetime.combine(current_date, time.max))
+                
+                bookings = Bookings.objects.filter(
+                    location=location,
+                    booking_start_time__gte=day_start,
+                    booking_start_time__lt=day_end,
+                    status__in=[BookingStatus.NA_CEKANJU, BookingStatus.PRIHVACEN]
+                )
+
+                slots = calculate_available_slots(working_hours, bookings, current_date)
+
+                result.append({
+                    "location_id": str(location.id),
+                    "location_name": location.location_name,
+                    "location_city": location.location_city,
+                    "date": current_date.isoformat(),
+                    "slots": slots
+                })
+
+                current_date += timedelta(days=1)
+
+        return Response(result)
