@@ -14,6 +14,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils.crypto import get_random_string
 from users.permissions import IsOwnerOrAdmin
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from services.brevo_service import add_contact_to_brevo
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -43,12 +44,14 @@ class UserViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def register(self, request):
-        """
-        Endpoint za registraciju novog korisnika
-        """
         serializer = UserRegistrationSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             user = serializer.save()
+            add_contact_to_brevo(
+                email=user.email,
+                first_name=user.first_name,
+                last_name=user.last_name
+            )
             return Response(
                 {
                     'message': 'Korisnik uspešno registrovan',
