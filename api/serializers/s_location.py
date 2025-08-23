@@ -9,8 +9,7 @@ class LocationSerializer(serializers.ModelSerializer):
             'public_id': {'read_only': True},
             'customer': {'read_only': True},
             'created_at': {'read_only': True},
-            'updated_at': {'read_only': True},
-            'customer': {'read_only': True},
+            'updated_at': {'read_only': True}
         }
         read_only_fields = ['id', 'public_id']
 

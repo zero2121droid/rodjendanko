@@ -12,7 +12,8 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ("location_name", "customer", "location_address", "created_at")
+    list_display = ("location_name", "customer", "location_address", "created_at", "location_featured")
+    list_editable = ("location_featured",)
     search_fields = ("location_name", "customer__name", "location_address")
     list_filter = ("customer", "location_name")
     ordering = ["-created_at"]

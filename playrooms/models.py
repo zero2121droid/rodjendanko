@@ -51,6 +51,7 @@ class Location(models.Model):
     location_city = models.CharField(max_length=255, null=True, blank=True)
     location_state = models.CharField(max_length=255, null=True, blank=True)
     location_phone = models.CharField(max_length=255, null=True, blank=True)
+    location_featured = models.BooleanField(default=False)
     description = models.TextField(null=True, blank=True)
     location_latitude = models.FloatField(null=True, blank=True)
     location_longitude = models.FloatField(null=True, blank=True)

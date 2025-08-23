@@ -5,6 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from playrooms.models import Customer, Location, LocationImages, LocationWorkingHours
 from api.serializers.s_location import LocationSerializer, LocationImagesSerializer, LocationWorkingHoursSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from users.permissions import IsLocationOwnerOrAdmin
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, PermissionDenied
@@ -26,8 +27,14 @@ class LocationViewSet(viewsets.ModelViewSet):
     # partner da vidi samo svoje lokacije, takodje za partnere u response da se vracaju svi bookingsi bez paginacije, dodati polje start date i end date za filtere
     
     def get_permissions(self):
-        if self.action in ['list', 'retrieve']:
+        # Public read access for list/retrieve/search
+        if self.action in ['list', 'retrieve', 'public_search']:
             return [AllowAny()]
+
+        # For object-modifying actions use owner/admin permission
+        if self.action in ['create', 'update', 'partial_update', 'destroy', 'set_featured', 'my_locations']:
+            return [IsAuthenticated(), IsLocationOwnerOrAdmin()]
+
         return super().get_permissions()
     
     @action(detail=False, methods=["get"], url_path="my", permission_classes=[IsAuthenticated])
@@ -53,7 +60,11 @@ class LocationViewSet(viewsets.ModelViewSet):
         Javna pretraga lokacija dostupna bez autentifikacije
         """
         queryset = Location.objects.all()
-        
+        featured = request.query_params.get('featured', None)
+
+        if featured and featured.lower() in ['1', 'true', 'yes']:
+            queryset = queryset.filter(location_featured=True)
+            
         # Dodaj filtriranje po gradu ako je prosleđeno
         city = request.query_params.get('city')
         if city:
@@ -67,6 +78,20 @@ class LocationViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
+    @action(detail=True, methods=["post"], url_path="toggle-location-featured", permission_classes=[IsAuthenticated])
+    def set_featured(self, request, pk=None):
+        loc = self.get_object()
+        user = request.user
+        # Ensure object-level permissions are checked consistently
+        self.check_object_permissions(request, loc)
+
+        if 'location_featured' not in request.data:
+            raise ValidationError("Polje 'location_featured' je obavezno.")
+        loc.location_featured = bool(request.data['location_featured'])
+        loc.save()
+        serializer = self.get_serializer(loc)
+        return Response(serializer.data)
+
     # -------------------------------------------------
     # Ova funkcija perform_update se poziva kada se kreira nova lokacija.
     # Kada frontend pošalje POST request za kreiranje lokacije, NE šalje customer.
@@ -97,10 +122,13 @@ class LocationImagesViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         """
-        Dozvoli javni pristup za čitanje slika (potrebno za javnu pretragu)
+        Public read access, but enforce owner/admin for modifications.
         """
         if self.action in ['list', 'retrieve']:
             return [AllowAny()]
+        # For unsafe methods require owner/admin
+        if self.action in ['create', 'update', 'partial_update', 'destroy', 'set_main_image', 'remaining_image_slots']:
+            return [IsAuthenticated(), IsLocationOwnerOrAdmin()]
         return super().get_permissions()
 
     def get_queryset(self):
@@ -156,8 +184,8 @@ class LocationImagesViewSet(viewsets.ModelViewSet):
         image = self.get_object()
         user = request.user
 
-        if image.location.customer.user != user and not user.is_superuser:
-            raise PermissionDenied("Nemate dozvolu da menjate ovu sliku.")
+        # object-level permission check
+        self.check_object_permissions(request, image)
 
         LocationImages.objects.filter(location=image.location).update(is_main=False)
 
@@ -170,8 +198,8 @@ class LocationImagesViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         user = request.user
 
-        if instance.location.customer.user != user and not user.is_superuser:
-            raise PermissionDenied("Nemate dozvolu da obrišete ovu sliku.")
+        # object-level permission check
+        self.check_object_permissions(request, instance)
 
         return super().destroy(request, *args, **kwargs)
 
