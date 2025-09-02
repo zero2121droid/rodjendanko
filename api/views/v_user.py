@@ -117,6 +117,7 @@ class ChildrenViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["name"]
     parser_classes = [JSONParser,MultiPartParser, FormParser]
+    filterset_fields = ["user"]
 
     def get_queryset(self):
         user = self.request.user
