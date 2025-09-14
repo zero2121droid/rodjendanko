@@ -2,8 +2,8 @@ import uuid
 from django.forms import ValidationError
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from playrooms.models import Customer, Location, LocationImages, LocationWorkingHours
-from api.serializers.s_location import LocationSerializer, LocationImagesSerializer, LocationWorkingHoursSerializer
+from playrooms.models import Customer, Location, LocationImages, LocationWorkingHours, LocationCity
+from api.serializers.s_location import LocationSerializer, LocationImagesSerializer, LocationWorkingHoursSerializer, LocationCitySerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from users.permissions import IsLocationOwnerOrAdmin
 from rest_framework.decorators import action
@@ -289,3 +289,22 @@ class LocationWorkingHoursViewSet(viewsets.ModelViewSet):
 
         serializer.save(location=location)
 # ---------------------------------------------------------------------
+
+class LocationCityViewSet(viewsets.ModelViewSet):
+    serializer_class = LocationCitySerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["city_name"]
+    ordering_fields = ["created_at", "updated_at"]
+    ordering = ["created_at"]
+
+    def get_queryset(self):
+        location_param = self.request.query_params.get("location")
+
+        if location_param:
+            try:
+                uuid_obj = uuid.UUID(location_param)
+                return LocationCity.objects.filter(location__id=uuid_obj).order_by("created_at")
+            except ValueError:
+                return LocationCity.objects.filter(location__public_id=location_param).order_by("created_at")
+
+        return LocationCity.objects.all().order_by("created_at")

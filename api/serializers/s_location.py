@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from playrooms.models import Location, LocationImages, LocationWorkingHours
+from playrooms.models import Location, LocationImages, LocationWorkingHours, LocationCity
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,5 +28,11 @@ class LocationImagesSerializer(serializers.ModelSerializer):
 class LocationWorkingHoursSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocationWorkingHours
+        fields = "__all__"
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+class LocationCitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LocationCity
         fields = "__all__"
         read_only_fields = ['id', 'created_at', 'updated_at']

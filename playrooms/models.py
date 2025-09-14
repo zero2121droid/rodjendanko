@@ -126,3 +126,12 @@ class LocationWorkingHours(models.Model):
     def __str__(self):
         return f"Working hours for {self.location.location_name} on day {self.day_of_week}"
 
+class LocationCity(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    city_name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.city_name
