@@ -18,7 +18,19 @@ class LocationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["location_name", "location_address", "location_city", "location_top_priority", "description"]
-    filterset_fields = ["customer", "location_city", "location_top_priority"]  # primer za precizno filtriranje
+    filterset_fields = [
+        "customer", 
+        "location_city", 
+        "location_type",
+        "location_accommodation_wifi",
+        "location_accommodation_videosurveillance",
+        "location_accommodation_air_conditioning",
+        "location_accommodation_animator",
+        "location_accommodation_catering",
+        "location_accommodation_children_aged",
+        "location_featured",
+        "location_top_priority"
+        ]  # precizno filtriranje
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
 
@@ -56,9 +68,7 @@ class LocationViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=["get"], url_path="search", permission_classes=[AllowAny])
     def public_search(self, request):
-        """
-        Javna pretraga lokacija dostupna bez autentifikacije
-        """
+        """ Javna pretraga lokacija dostupna bez autentifikacije """
         queryset = Location.objects.all()
         featured = request.query_params.get('featured', None)
 
@@ -69,7 +79,35 @@ class LocationViewSet(viewsets.ModelViewSet):
         city = request.query_params.get('city')
         if city:
             queryset = queryset.filter(location_city__icontains=city)
-            
+        
+        air_conditioning = request.query_params.get('air_conditioning')
+        if air_conditioning and air_conditioning.lower() in ['1', 'true', 'yes']:
+            queryset = queryset.filter(location_accommodation_air_conditioning=True)
+
+        wifi = request.query_params.get('wifi')
+        if wifi and wifi.lower() in ['1', 'true', 'yes']:
+            queryset = queryset.filter(location_accommodation_wifi=True)
+
+        videosurveillance = request.query_params.get('videosurveillance')
+        if videosurveillance and videosurveillance.lower() in ['1', 'true', 'yes']:
+            queryset = queryset.filter(location_accommodation_videosurveillance=True)
+
+        animator = request.query_params.get('animator')
+        if animator and animator.lower() in ['1', 'true', 'yes']:
+            queryset = queryset.filter(location_accommodation_animator=True)
+
+        catering = request.query_params.get('catering')
+        if catering and catering.lower() in ['1', 'true', 'yes']:
+            queryset = queryset.filter(location_accommodation_catering=True)
+
+        children_aged = request.query_params.get('children_aged')
+        if children_aged:
+            queryset = queryset.filter(location_accommodation_children_aged__icontains=children_aged)
+
+        location_type = request.query_params.get('location_type')
+        if location_type:
+            queryset = queryset.filter(location_type__icontains=location_type)
+
         # Dodaj pretragu po imenu
         search = request.query_params.get('search')
         if search:

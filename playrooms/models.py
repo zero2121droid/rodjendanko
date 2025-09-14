@@ -44,6 +44,17 @@ class Customer(models.Model):
 
 class Location(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    Age_Range = [
+        ('0-3', '0-3 godine (bebe i mala deca)'),
+        ('4-7', '4-7 godine (predskolci)'),
+        ('8-12', '8-12 godine (skolski uzrast)'),
+        ('13+', '13+ godina (tinejdžeri i odrasli)'),
+    ]
+    Location_Type = [
+        ('indoor', 'Unutrašnji prostor'),
+        ('outdoor', 'Spoljašnji prostor'),
+        ('mixed', 'Mešoviti prostor'),
+    ]
     public_id = models.CharField(max_length=20, blank=True, null=True, unique=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
     location_name = models.CharField(max_length=255)
@@ -53,6 +64,14 @@ class Location(models.Model):
     location_phone = models.CharField(max_length=255, null=True, blank=True)
     location_featured = models.BooleanField(default=False, db_index=True) # VG - koristi se za isticanje igraonice na home stranici
     location_top_priority = models.BooleanField(default=False, db_index=True) # VG - koristi se za isticanje igraonice u pretrazi, kada se prikazu rezultati pretrage (slicno polovni automobili)
+    location_accommodation_parking = models.BooleanField(default=False, db_index=True)
+    location_accommodation_wifi = models.BooleanField(default=False, db_index=True)
+    location_accommodation_videosurveillance = models.BooleanField(default=False, db_index=True)
+    location_accommodation_air_conditioning = models.BooleanField(default=False, db_index=True)
+    location_accommodation_animator = models.BooleanField(default=False, db_index=True)
+    location_accommodation_catering = models.BooleanField(default=False, db_index=True)
+    location_accommodation_children_aged = models.CharField(max_length=255, choices=Age_Range, null=True, blank=True)
+    location_type = models.CharField(max_length=255, choices=Location_Type, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     location_latitude = models.FloatField(null=True, blank=True)
     location_longitude = models.FloatField(null=True, blank=True)
