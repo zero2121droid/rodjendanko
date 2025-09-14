@@ -2,6 +2,13 @@ from rest_framework import serializers
 from playrooms.models import Location, LocationImages, LocationWorkingHours, LocationCity
 
 class LocationSerializer(serializers.ModelSerializer):
+    location_city = serializers.PrimaryKeyRelatedField(
+        queryset=LocationCity.objects.all(),
+        allow_null=True,
+        required=False
+    )
+    location_city_name = serializers.CharField(source='location_city.name', read_only=True)
+    
     class Meta:
         model = Location
         fields = "__all__"
