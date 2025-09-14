@@ -35,7 +35,6 @@ class LocationWorkingHoursAdmin(admin.ModelAdmin):
 
 @admin.register(LocationCity)
 class LocationCityAdmin(admin.ModelAdmin):
-    list_display = ("city_name", "location", "created_at")
-    search_fields = ("city_name", "location__location_name")
-    list_filter = ("location",)
-    ordering = ["-created_at"]
+    list_display = ("city_name", "created_at")
+    search_fields = ("city_name",)
+    ordering = ["city_name"]

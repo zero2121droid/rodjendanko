@@ -59,7 +59,7 @@ class Location(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
     location_name = models.CharField(max_length=255)
     location_address = models.TextField(null=True, blank=True)
-    location_city = models.CharField(max_length=255, null=True, blank=True)
+    location_city = models.ForeignKey('LocationCity', on_delete=models.SET_NULL, null=True, blank=True)
     location_state = models.CharField(max_length=255, null=True, blank=True)
     location_phone = models.CharField(max_length=255, null=True, blank=True)
     location_featured = models.BooleanField(default=False, db_index=True) # VG - koristi se za isticanje igraonice na home stranici
@@ -128,7 +128,6 @@ class LocationWorkingHours(models.Model):
 
 class LocationCity(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
     city_name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
