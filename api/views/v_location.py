@@ -292,6 +292,7 @@ class LocationWorkingHoursViewSet(viewsets.ModelViewSet):
 
 class LocationCityViewSet(viewsets.ModelViewSet):
     serializer_class = LocationCitySerializer
+    permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["city_name"]
     ordering_fields = ["created_at", "updated_at"]
