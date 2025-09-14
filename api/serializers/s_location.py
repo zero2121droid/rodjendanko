@@ -12,6 +12,14 @@ class LocationSerializer(serializers.ModelSerializer):
             'updated_at': {'read_only': True}
         }
         read_only_fields = ['id', 'public_id']
+    
+    def validate_location_accommodation_children_aged(self, value):
+        valid_choices = ['0-3', '4-7', '8-12', '13+']
+        if value and isinstance(value, list):
+            for choice in value:
+                if choice not in valid_choices:
+                    raise serializers.ValidationError(f"Nepravilan izbor: {choice}")
+        return value
 
 class LocationImagesSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()

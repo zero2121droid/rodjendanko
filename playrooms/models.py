@@ -70,7 +70,7 @@ class Location(models.Model):
     location_accommodation_air_conditioning = models.BooleanField(default=False, db_index=True)
     location_accommodation_animator = models.BooleanField(default=False, db_index=True)
     location_accommodation_catering = models.BooleanField(default=False, db_index=True)
-    location_accommodation_children_aged = models.CharField(max_length=255, choices=Age_Range, null=True, blank=True)
+    location_accommodation_children_aged = models.JSONField(default=list, blank=True)
     location_type = models.CharField(max_length=255, choices=Location_Type, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     location_latitude = models.FloatField(null=True, blank=True)

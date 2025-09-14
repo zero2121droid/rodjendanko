@@ -107,6 +107,10 @@ class LocationViewSet(viewsets.ModelViewSet):
         location_type = request.query_params.get('location_type')
         if location_type:
             queryset = queryset.filter(location_type__icontains=location_type)
+        
+        age_ranges = request.query_params.getlist('age_ranges')
+        if age_ranges:
+            queryset = queryset.filter(location_accommodation_children_aged__overlap=age_ranges)
 
         # Dodaj pretragu po imenu
         search = request.query_params.get('search')
