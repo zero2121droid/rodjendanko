@@ -7,8 +7,8 @@ class LocationSerializer(serializers.ModelSerializer):
         allow_null=True,
         required=False
     )
-    location_city_name = serializers.CharField(source='location_city.name', read_only=True)
-    
+    location_city_name = serializers.CharField(source='location_city.city_name', read_only=True)
+
     class Meta:
         model = Location
         fields = "__all__"

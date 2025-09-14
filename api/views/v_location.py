@@ -17,7 +17,7 @@ class LocationViewSet(viewsets.ModelViewSet):
     serializer_class = LocationSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["location_name", "location_address", "location_city__name", "location_top_priority", "description"]
+    search_fields = ["location_name", "location_address", "location_city__city_name", "location_top_priority", "description"]
     filterset_fields = [
         "customer", 
         "location_city", 
@@ -78,7 +78,7 @@ class LocationViewSet(viewsets.ModelViewSet):
         # Dodaj filtriranje po gradu ako je prosleđeno
         city = request.query_params.get('city')
         if city:
-            queryset = queryset.filter(location_city__name__icontains=city)
+            queryset = queryset.filter(location_city__city_name__icontains=city)
         
         air_conditioning = request.query_params.get('air_conditioning')
         if air_conditioning and air_conditioning.lower() in ['1', 'true', 'yes']:
