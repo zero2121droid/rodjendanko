@@ -12,6 +12,7 @@ from api.views.v_wallet import WalletViewSet, WalletTransactionViewSet
 from api.views.v_customer import CustomerViewSet
 from api.views.v_customer_registration import CustomerRegistrationView
 from api.views.v_rating import RatingViewSet
+from api.views.v_location import LocationCityViewSet
 
 
 router = DefaultRouter()
@@ -30,6 +31,7 @@ router.register(r'wallet', WalletViewSet, basename='wallet')
 router.register(r'wallet-transactions', WalletTransactionViewSet, basename='wallet-transactions')
 router.register(r'notifications', NotificationViewSet, basename='notification')
 router.register(r'ratings', RatingViewSet, basename='ratings')
+router.register(r'location-cities', LocationCityViewSet, basename='location-cities')
 
 urlpatterns = router.urls + [
     path('customer/register/', CustomerRegistrationView.as_view(), name='customer-register'),
