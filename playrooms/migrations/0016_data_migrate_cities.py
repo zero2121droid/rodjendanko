@@ -4,7 +4,6 @@ from django.db import migrations
 def create_cities_from_existing_data(apps, schema_editor):
     """
     Kreira LocationCity objekte iz postojećih location_city stringova
-    i mapira Location.location_city na odgovarajuće LocationCity objekte
     """
     Location = apps.get_model('playrooms', 'Location')
     LocationCity = apps.get_model('playrooms', 'LocationCity')
@@ -19,17 +18,11 @@ def create_cities_from_existing_data(apps, schema_editor):
     
     print(f"Found cities to migrate: {existing_cities}")
     
-    # Kreiraj LocationCity objekte
-    city_objects = {}
+    # Kreiraj LocationCity objekte - samo sa city_name, bez location ForeignKey
     for city_name in existing_cities:
-        # Koristi get_or_create da izbegneš duplikate
-        city_obj, created = LocationCity.objects.get_or_create(
-            city_name=city_name,  # koristim city_name jer je to polje u modelu
-            defaults={'city_name': city_name}
-        )
-        city_objects[city_name] = city_obj
-        if created:
-            print(f"Created city: {city_name}")
+        # Ručno kreiraj objekat sa samo potrebnim poljima
+        LocationCity.objects.create(city_name=city_name)
+        print(f"Created city: {city_name}")
 
 def reverse_migration(apps, schema_editor):
     """
@@ -45,7 +38,12 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # Prvo kreiraj LocationCity objekte iz postojećih stringova
+        # Prvo ukloni location polje iz LocationCity
+        migrations.RemoveField(
+            model_name='locationcity',
+            name='location',
+        ),
+        # Zatim kreiraj LocationCity objekte iz postojećih stringova
         migrations.RunPython(
             create_cities_from_existing_data,
             reverse_migration,
