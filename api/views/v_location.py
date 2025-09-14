@@ -100,6 +100,10 @@ class LocationViewSet(viewsets.ModelViewSet):
         if catering and catering.lower() in ['1', 'true', 'yes']:
             queryset = queryset.filter(location_accommodation_catering=True)
 
+        parking = request.query_params.get('parking')
+        if parking and parking.lower() in ['1', 'true', 'yes']:
+            queryset = queryset.filter(location_accommodation_parking=True)
+
         location_type = request.query_params.get('location_type')
         if location_type:
             queryset = queryset.filter(location_type__icontains=location_type)
