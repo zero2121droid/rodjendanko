@@ -314,7 +314,8 @@ class BookingsViewSet(viewsets.ModelViewSet):
                     "location_id": str(location.id),
                     "location_public_id": location.public_id,
                     "location_name": location.location_name,
-                    "location_city": location.location_city,
+                    "location_city": str(location.location_city.id) if location.location_city else None,
+                    "location_city_name": location.location_city.city_name if location.location_city else None,
                     "location_address": location.location_address,
                     "date": current_date.isoformat(),
                     "slots": slots
@@ -386,7 +387,8 @@ class PublicAvailableSlotsView(APIView):
                     "location_id": str(location.id),
                     "location_public_id": location.public_id,
                     "location_name": location.location_name,
-                    "location_city": location.location_city,
+                    "location_city": str(location.location_city.id) if location.location_city else None,
+                    "location_city_name": location.location_city.city_name if location.location_city else None,
                     "location_address": location.location_address,
                     "date": current_date.isoformat(),
                     "slots": slots
