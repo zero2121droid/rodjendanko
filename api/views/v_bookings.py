@@ -281,7 +281,10 @@ class BookingsViewSet(viewsets.ModelViewSet):
             return Response({"detail": "date_from ne može biti posle date_to"}, status=400)
 
         if location_id:
-            locations = Location.objects.filter(public_id=location_id)
+            # Pokušaj prvo po public_id, pa po UUID-u
+            locations = Location.objects.filter(
+                Q(public_id=location_id) | Q(id=location_id)
+            )
         else:
             locations = Location.objects.filter(locationworkinghours__isnull=False).distinct()
 
@@ -354,7 +357,10 @@ class PublicAvailableSlotsView(APIView):
             return Response({"detail": "date_from ne može biti posle date_to"}, status=400)
 
         if location_id:
-            locations = Location.objects.filter(public_id=location_id)
+            # Pokušaj prvo po public_id, pa po UUID-u
+            locations = Location.objects.filter(
+                Q(public_id=location_id) | Q(id=location_id)
+            )
         else:
             locations = Location.objects.filter(locationworkinghours__isnull=False).distinct()
 
