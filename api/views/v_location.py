@@ -5,6 +5,7 @@ from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from playrooms.models import Customer, Location, LocationImages, LocationWorkingHours, LocationCity
 from api.serializers.s_location import LocationSerializer, LocationImagesSerializer, LocationWorkingHoursSerializer, LocationCitySerializer
+from api.filters import LocationFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from users.permissions import IsLocationOwnerOrAdmin
 from rest_framework.decorators import action
@@ -18,20 +19,8 @@ class LocationViewSet(viewsets.ModelViewSet):
     serializer_class = LocationSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_class = LocationFilter  # Koristi custom filter
     search_fields = ["location_name", "location_address", "location_city__city_name", "location_top_priority", "description"]
-    filterset_fields = [
-        "customer", 
-        "location_city", 
-        "location_type",
-        "location_accommodation_wifi",
-        "location_accommodation_videosurveillance",
-        "location_accommodation_air_conditioning",
-        "location_accommodation_animator",
-        "location_accommodation_catering",
-        "location_accommodation_children_aged",
-        "location_featured",
-        "location_top_priority"
-        ]  # precizno filtriranje
     ordering_fields = ["created_at", "updated_at"]
     ordering = ["created_at"]  # defaultno sortiranje po created_at
 
@@ -113,23 +102,15 @@ class LocationViewSet(viewsets.ModelViewSet):
         if age_ranges:
             queryset = queryset.filter(location_accommodation_children_aged__overlap=age_ranges)
 
-        # Filtriranje po broju dece
-        min_children = request.query_params.get('min_children')
-        if min_children:
+        # Filtriranje po broju dece na rođendanu
+        party_size = request.query_params.get('party_size')
+        if party_size:
             try:
-                min_children = int(min_children)
+                party_size = int(party_size)
+                # Igraonica mora da ima fizički kapacitet za taj broj dece
+                # min_children je samo za naplatu, ne ograničava prijavanje
                 queryset = queryset.filter(
-                    Q(location_min_children__lte=min_children) | Q(location_min_children__isnull=True)
-                )
-            except ValueError:
-                pass
-
-        max_children = request.query_params.get('max_children')
-        if max_children:
-            try:
-                max_children = int(max_children)
-                queryset = queryset.filter(
-                    Q(location_max_children__gte=max_children) | Q(location_max_children__isnull=True)
+                    Q(location_max_children__gte=party_size) | Q(location_max_children__isnull=True)
                 )
             except ValueError:
                 pass
