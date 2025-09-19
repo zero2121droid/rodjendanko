@@ -1,5 +1,6 @@
 import uuid
 from django.forms import ValidationError
+from django.db.models import Q
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from playrooms.models import Customer, Location, LocationImages, LocationWorkingHours, LocationCity
@@ -111,6 +112,27 @@ class LocationViewSet(viewsets.ModelViewSet):
         age_ranges = request.query_params.getlist('age_ranges')
         if age_ranges:
             queryset = queryset.filter(location_accommodation_children_aged__overlap=age_ranges)
+
+        # Filtriranje po broju dece
+        min_children = request.query_params.get('min_children')
+        if min_children:
+            try:
+                min_children = int(min_children)
+                queryset = queryset.filter(
+                    Q(location_min_children__lte=min_children) | Q(location_min_children__isnull=True)
+                )
+            except ValueError:
+                pass
+
+        max_children = request.query_params.get('max_children')
+        if max_children:
+            try:
+                max_children = int(max_children)
+                queryset = queryset.filter(
+                    Q(location_max_children__gte=max_children) | Q(location_max_children__isnull=True)
+                )
+            except ValueError:
+                pass
 
         # Dodaj pretragu po imenu
         search = request.query_params.get('search')

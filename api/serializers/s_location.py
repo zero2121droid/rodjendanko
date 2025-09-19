@@ -27,6 +27,23 @@ class LocationSerializer(serializers.ModelSerializer):
                 if choice not in valid_choices:
                     raise serializers.ValidationError(f"Nepravilan izbor: {choice}")
         return value
+    
+    def validate(self, data):
+        """Validacija min/max children polja"""
+        min_children = data.get('location_min_children')
+        max_children = data.get('location_max_children')
+        
+        if min_children is not None and min_children < 1:
+            raise serializers.ValidationError("Minimalni broj dece mora biti veći od 0")
+            
+        if max_children is not None and max_children < 1:
+            raise serializers.ValidationError("Maksimalni broj dece mora biti veći od 0")
+            
+        if min_children is not None and max_children is not None:
+            if min_children > max_children:
+                raise serializers.ValidationError("Minimalni broj dece ne može biti veći od maksimalnog")
+                
+        return data
 
 class LocationImagesSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()

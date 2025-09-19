@@ -12,11 +12,30 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ("location_name", "customer", "location_address", "created_at", "location_featured", "location_top_priority")
-    list_editable = ("location_featured", "location_top_priority")
+    list_display = ("location_name", "customer", "location_address", "location_min_children", "location_max_children", "created_at", "location_featured", "location_top_priority")
+    list_editable = ("location_featured", "location_top_priority", "location_min_children", "location_max_children")
     search_fields = ("location_name", "customer__name", "location_address")
-    list_filter = ("customer", "location_name")
+    list_filter = ("customer", "location_name", "location_min_children", "location_max_children")
     ordering = ["-created_at"]
+    
+    fieldsets = (
+        ("Osnovne informacije", {
+            "fields": ("location_name", "customer", "location_address", "location_city", "location_state", "location_phone", "description")
+        }),
+        ("Kapacitet", {
+            "fields": ("location_min_children", "location_max_children", "location_accommodation_children_aged")
+        }),
+        ("Prioritet i isticanje", {
+            "fields": ("location_featured", "location_top_priority")
+        }),
+        ("Sadržaji", {
+            "fields": ("location_accommodation_parking", "location_accommodation_wifi", "location_accommodation_videosurveillance", 
+                      "location_accommodation_air_conditioning", "location_accommodation_animator", "location_accommodation_catering")
+        }),
+        ("Tip i lokacija", {
+            "fields": ("location_type", "location_latitude", "location_longitude")
+        })
+    )
 
 @admin.register(LocationImages)
 class LocationImagesAdmin(admin.ModelAdmin):
